@@ -17,12 +17,12 @@ import { Select, Stack } from '@chakra-ui/react';
 import { Eye, Receipt, Ticket } from 'lucide-react';
 import TableFlightQuery from '@/components/TableFlightQuery';
 import Swal from 'sweetalert2';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useRoutes } from 'react-router-dom';
 export default function FlightQuota() {
   const {FlightQuery}=useGlobalData();
   const [selectedRow,setSelectedRow]=useState(null);
   const [isOpen,setIsOpen]=useState(false);
-
+const navigate=useNavigate();
   // const [data,setdata]=useState(FlightQuery);
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -100,7 +100,7 @@ export default function FlightQuota() {
                             cancelButtonColor:'#f44336'
                           }).then((result) => {
                             if (result.isConfirmed) {
-                             return window.location.href=`query-confirm/${row._id}`
+                              navigate(`/dashboard/query-confirm/${row._id}`)
                             } else if (result.dismiss === Swal.DismissReason.cancel) {
                              return
                             }
@@ -129,12 +129,14 @@ export default function FlightQuota() {
                    {row.status===1 ? 
                   (
                     <Stack direction="row" spacing={4}>
-                      <Link href={`/ticket/${row._id}`}>
-                      <Ticket  style={{cursor:'pointer'}} />
-                      </Link>
-                      <Link href={`/invoice/${row._id}`}>
-                      <Receipt  style={{cursor:'pointer'}}  />
-                      </Link>
+                      <Ticket onClick={()=>{
+                        navigate(`/ticket/${row._id}`)
+                      }}  style={{cursor:'pointer'}} />
+                 
+                      <Receipt  style={{cursor:'pointer'}}  onClick={()=>{
+                        navigate(`/invoice/${row._id}`)
+                      }} />
+                   
                     </Stack>
                   ) 
                   :
