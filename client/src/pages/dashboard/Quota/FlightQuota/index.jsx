@@ -129,13 +129,12 @@ export default function FlightQuota() {
                    {row.status===1 ? 
                   (
                     <Stack direction="row" spacing={4}>
-                      <Ticket  style={{cursor:'pointer'}} onClick={()=>{
-                        window.location.href=`/ticket/${row._id}`
-                      }} />
-                      <Receipt  style={{cursor:'pointer'}} onClick={(e)=>{
-                        window.location.href=`/invoice/${row._id}`
-
-                      }} />
+                      <Link href={`/ticket/${row._id}`}>
+                      <Ticket  style={{cursor:'pointer'}} />
+                      </Link>
+                      <Link href={`/invoice/${row._id}`}>
+                      <Receipt  style={{cursor:'pointer'}}  />
+                      </Link>
                     </Stack>
                   ) 
                   :
