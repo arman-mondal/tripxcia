@@ -13,9 +13,10 @@ import {
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { authorsTableData, projectsTableData } from "@/data";
 import { useGlobalData } from '@/hooks/GlobalData';
-import { Select } from '@chakra-ui/react';
-import { Eye } from 'lucide-react';
+import { Select, Stack } from '@chakra-ui/react';
+import { Eye, Receipt, Ticket } from 'lucide-react';
 import TableFlightQuery from '@/components/TableFlightQuery';
+import Swal from 'sweetalert2';
 
 export default function FlightQuota() {
   const {FlightQuery}=useGlobalData();
@@ -86,7 +87,30 @@ export default function FlightQuota() {
                       </Typography>
                     </td>
                     <td className={className}>
-                      <Select value={row.status}>
+                      <Select onChange={(e)=>{
+                        if(e.target.value==='1'){
+                          Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You want to confirm this flight",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Yes, confirm it!',
+                            cancelButtonText: 'No, keep it',
+                            confirmButtonColor:'#4caf50',
+                            cancelButtonColor:'#f44336'
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                             return window.location.href=`query-confirm/${row._id}`
+                            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                             return
+                            }
+                          })
+
+                        }
+                        else{
+                          return
+                        }
+                      }} value={row.status} disabled={row.status===1}>
                         <option value="0">Pending</option>
                         <option value="1">Confirmed</option>
                       </Select>
@@ -102,7 +126,21 @@ export default function FlightQuota() {
                       </Typography>
                     </td>
                     <td className={className}>
-                     <Eye style={{cursor:'pointer'}} onClick={()=>{
+                   {row.status===1 ? 
+                  (
+                    <Stack direction="row" spacing={4}>
+                      <Ticket  style={{cursor:'pointer'}} onClick={()=>{
+                        window.location.href=`/ticket/${row._id}`
+                      }} />
+                      <Receipt  style={{cursor:'pointer'}} onClick={(e)=>{
+                        window.location.href=`/invoice/${row._id}`
+
+                      }} />
+                    </Stack>
+                  ) 
+                  :
+                  (
+                    <Eye style={{cursor:'pointer'}} onClick={()=>{
                       setSelectedRow({
                         client:row.client,
                         serviceType:row.serviceType,
@@ -124,6 +162,8 @@ export default function FlightQuota() {
 
 
                      }}/>
+                  )
+                  }
                     </td>
                   </tr>
                 );

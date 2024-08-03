@@ -18,6 +18,7 @@ import { authorsTableData, projectsTableData } from "@/data";
 import {
   Box,
   Checkbox,
+  Divider,
   FormControl,
   FormLabel,
   Grid,
@@ -68,7 +69,7 @@ export default function GenarateQuery() {
     count: steps.length,
   })
   const [handleTable,settable]=useState(false)
-  
+  const [totalFlightTicket,setTotalFlightTicket]=useState(1)
   const [data,setdata]=useState({
     client:'Select',
     service:'Select',
@@ -136,7 +137,7 @@ export default function GenarateQuery() {
 
    })
     .then((response)=>{
-      if(response?.data?.data){
+      if(response){
         toast.success('Query Genarated Successfully')
       }
       else{
@@ -193,7 +194,7 @@ const firstStepHandle=()=>{
 
 
   return (
-    <div className="mt-12 mb-8 flex flex-col gap-12">
+    <div className="mt-12 mb-8 flex flex-col gap-12 min-w-full">
       <TableFlightQuery isOpen={handleTable} handleSave={handleFlightSubmit} onClose={()=>{settable(false)}}  data={data}/>
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
@@ -415,12 +416,16 @@ const firstStepHandle=()=>{
       data.service==='Flight'?
       (
         <>
-        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        {Array.from({length:totalFlightTicket}).map((_,index)=>(
+          <>
+
+<Grid templateColumns='repeat(3, 1fr)' gap={5}  >
         <FormControl>
          <FormLabel>Flight Type</FormLabel>
          <NormalSelect value={data.flightType} onChange={(e)=>{
             setdata({...data,flightType:e.target.value})
          }}>
+          <option selected disabled value={''}>Select</option>
          <option value="Direct">Direct</option>
          <option value="Via">Via</option>
          </NormalSelect>
@@ -447,6 +452,8 @@ const firstStepHandle=()=>{
          <NormalSelect value={data.fareType} onChange={(e)=>{
             setdata({...data,fareType:e.target.value})
          }}>
+                    <option selected disabled value={''}>Select</option>
+
          <option value="Normal">Normal</option>
        <option value={'SME Fare'} >SME Fare</option>
         <option value={'Corporate Fare'} >Corporate Fare</option>
@@ -482,7 +489,56 @@ const firstStepHandle=()=>{
             setdata({...data,arrivalTime:e.target.value})
          }} />
         </FormControl>
-        <FormControl>
+        </Grid>
+        <Divider/>
+
+        <Grid>
+        {
+          data.flightType==='Via'&&
+
+          (
+            <>
+          <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+          <FormControl >
+             <FormLabel>Flight Number</FormLabel>
+             <Input type="text" placeholder="Flight Number" value={data.FlightNumber} onChange={(e)=>{
+                setdata({...data,FlightNumber:e.target.value})
+             }} />
+            </FormControl>
+            <FormControl>
+             <FormLabel>Departure From</FormLabel>
+             <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:data.departureFrom,label:data.departureFrom}} onChange={(e)=>{
+              setdata({...data,departureFrom:e.value})
+            }
+            } isSearchable={true} />
+            </FormControl>
+            <FormControl>
+             <FormLabel>Departure Time</FormLabel>
+             <Input type="time" placeholder="Departure Time" value={data.departureTime} onChange={(e)=>{
+                setdata({...data,departureTime:e.target.value})
+             }} />
+            </FormControl>
+            <FormControl>
+             <FormLabel>Arrival To</FormLabel>
+            <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:data.arrivalTo,label:data.arrivalTo}} onChange={(e)=>{
+              setdata({...data,arrivalTo:e.value})
+            }
+            } isSearchable={true} />
+    
+            </FormControl>
+            <FormControl>
+             <FormLabel>Arrival Time</FormLabel>
+             <Input type="time" placeholder="Arrival Time" value={data.arrivalTime} onChange={(e)=>{
+                setdata({...data,arrivalTime:e.target.value})
+             }} />
+            </FormControl>
+            </Grid>
+        </>
+          )
+            
+        }
+       <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+       <FormControl>
          <FormLabel>Our Cost</FormLabel>
          <Input type="number" placeholder="Our Cost" value={data.OurCost} onChange={(e)=>{
             setdata({...data,OurCost:e.target.value})
@@ -499,6 +555,7 @@ const firstStepHandle=()=>{
          <Input disabled type="number" placeholder="PRF" value={Number(data.OurCost)+Number(data.Prf)} />
         </FormControl>
         </Grid>
+        </Grid>
         <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
         <FormControl>
          <FormLabel>Refundable</FormLabel>
@@ -509,12 +566,17 @@ const firstStepHandle=()=>{
           
         </FormControl>
         </Grid>
-        <FormControl>
-        <Button style={{backgroundColor:'blue'}} onClick={()=>{setCurrentStep(currentStep+1)}}>Duplicate</Button>
+ 
+
+          </>
+
+        ))}
+       
+     
+       <FormControl>
+        <Button style={{backgroundColor:'blue'}} onClick={()=>{setTotalFlightTicket(totalFlightTicket+1)}}>Duplicate</Button>
 
         </FormControl>
-
-
 
         </>
       )

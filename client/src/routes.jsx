@@ -24,6 +24,8 @@ import Payments from "./pages/dashboard/Payment";
 import Billings from "./pages/dashboard/Billings";
 import Role from "./pages/dashboard/Role";
 import Sales from "./pages/dashboard/Sales";
+import path from "path";
+import GenarateQueryConfirm from "./pages/dashboard/Query/GenarateAfterConfirm";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -31,6 +33,7 @@ const icon = {
 
 export const routes = [
   {
+  
     layout: "dashboard",
     pages: [
       {
@@ -77,6 +80,7 @@ export const routes = [
         path: "/vendors",
         element: <VendorList />,
       },
+      
         ]
 
 
@@ -129,6 +133,14 @@ export const routes = [
         ]
 
       },
+      {
+        icon: <Quote {...icon} />,
+        name: "query-confirm",
+        path: "/query-confirm/:id",
+        element: <GenarateQueryConfirm />,
+        hidden:true
+      },
+
  
       {
         icon: <CheckCircle {...icon} />,
@@ -160,12 +172,8 @@ export const routes = [
         path: "/sales",
         element: <Sales />,
       },
-      {
-        icon: <UserCircleIcon {...icon} />,
-        name: "profile",
-        
-      }
-
+     
+     
      
     ],
     

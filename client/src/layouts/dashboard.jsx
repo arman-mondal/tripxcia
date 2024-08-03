@@ -39,13 +39,17 @@ export function Dashboard() {
           {
             routes.map(({ layout, pages }) => (
               layout === "dashboard" && pages.map(({ hasDropdown, dropdown }) => (
-                hasDropdown && dropdown.map(({ path, element }) => (
+                hasDropdown ? dropdown.map(({ path, element }) => (
                   <Route exact path={path} element={element} />
                 ))
-              ))
+                : pages.map(({ path, element }) => (
+                  <Route exact path={path} element={element} />
+
+              ))))
+            
             )
           )
-
+        
           }
         </Routes>
         <div className="text-blue-gray-600">

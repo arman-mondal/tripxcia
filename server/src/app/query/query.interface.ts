@@ -22,6 +22,16 @@ export interface QueryInterface{
     ourCost:number;
     prf:number;
     refundable:boolean;
+    passengerName?:string;
+    gender?:string;
+    pnrNumber?:string;
+    seatNumber?:string;
+    class?:string;
+    meal?:boolean;
+    invoiceNumber?:string;
+    vendorName?:string;
+    status?:number;
+    bookingDate?:string;
     
     
     

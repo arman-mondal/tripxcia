@@ -3,6 +3,8 @@ import { QueryModel } from "./query.model";
 
 export const FlightQuerySave=async(req:Request,res:Response)=>{
     try {
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().split('T')[0];
         const query = await new QueryModel({
             client:req.body.client,
             serviceType:req.body.serviceType,
@@ -23,10 +25,43 @@ export const FlightQuerySave=async(req:Request,res:Response)=>{
             arrivalTime:req.body.arrivalTime,
             ourCost:req.body.ourCost,
             prf:req.body.prf,
-            refundable:req.body.refundable
+            refundable:req.body.refundable,
+            bookingDate:formattedDate,
         });
         console.log(query)
         await query.save().then((result)=>{
+            console.log(result)
+            return res.status(200).json({message:"Query Saved Successfully",result:result});
+        }).catch((error)=>{
+            console.log(error)
+            return res.status(500).json({message:error});
+        });
+        
+
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+}
+
+
+export const FlightQueryConfirmed=async(req:Request,res:Response)=>{
+    try {
+        const queryId=req.params.id;
+        
+        
+        await QueryModel.findOneAndUpdate({_id:queryId},{
+            passengerName:req.body.passengerName,
+            gender:req.body.gender,
+            pnrNumber:req.body.pnrNumber,
+            seatNumber:req.body.seatNumber,
+            class:req.body.class,
+            meal:req.body.meal,
+            invoiceNumber:req.body.invoiceNumber,
+            vendorName:req.body.vendorName,
+            status:1,
+
+        })
+        .then((result)=>{
             console.log(result)
             return res.status(200).json({message:"Query Saved Successfully",result:result});
         }).catch((error)=>{
@@ -48,3 +83,4 @@ export const getFlightQueries=async(req:Request,res:Response)=>{
         return res.status(500).json({message:error});
     }
 }
+

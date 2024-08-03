@@ -62,9 +62,10 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </Typography>
               </li>
             )}
-            {pages.map(({ icon, name, path, hasDropdown,dropdown }) => (
+            {pages.filter(a=>a.name!=='query-confirm').map(({ icon, name, path, hasDropdown,dropdown }) => (
               hasDropdown ? (
-                <li key={name}>
+                <li key={name} style={{
+                }}>
                   <NavLink to={`#`} onClick={()=>{
                     if(currentTab===name){
                       setcurrentTab('')

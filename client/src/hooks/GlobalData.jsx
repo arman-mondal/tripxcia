@@ -17,6 +17,18 @@ export const GlobalDataProvider = ({ children }) => {
         fetchFlightQuery();
 
     },[])
+    const fetchFlightQueryById=(id)=>{
+        try {
+          const Query=FlightQuery.find((query)=>query._id===id);
+            return Query;
+
+
+            
+        } catch (error) {
+            toast.error('Error fetching flight query')
+        }
+    }
+
 
     const fetchFlightQuery=async()=>{
         try {
@@ -49,7 +61,7 @@ export const GlobalDataProvider = ({ children }) => {
 
     // Provide the global data and update function to the children components
     return (
-        <GlobalDataContext.Provider value={{ FlightQuery }}>
+        <GlobalDataContext.Provider value={{ FlightQuery,fetchFlightQueryById }}>
             {children}
         </GlobalDataContext.Provider>
     );

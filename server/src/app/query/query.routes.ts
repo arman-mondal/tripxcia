@@ -1,10 +1,11 @@
 import { Router } from "express";
 
-import { FlightQuerySave, getFlightQueries } from "./query.controller";
+import { FlightQueryConfirmed, FlightQuerySave, getFlightQueries } from "./query.controller";
 const app=Router();
 
 app.post("/flight/save",FlightQuerySave);
 app.get("/flight/list",getFlightQueries);
+app.put("/flight/confirm/:id",FlightQueryConfirmed);
 
 
 export {
