@@ -17,7 +17,7 @@ import { Select, Stack } from '@chakra-ui/react';
 import { Eye, Receipt, Ticket } from 'lucide-react';
 import TableFlightQuery from '@/components/TableFlightQuery';
 import Swal from 'sweetalert2';
-
+import { Link } from 'react-router-dom';
 export default function FlightQuota() {
   const {FlightQuery}=useGlobalData();
   const [selectedRow,setSelectedRow]=useState(null);
