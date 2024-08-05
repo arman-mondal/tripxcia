@@ -9,10 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFlightQueries = exports.FlightQuerySave = void 0;
+exports.getFlightQueries = exports.FlightQueryConfirmed = exports.FlightQuerySave = void 0;
 const query_model_1 = require("./query.model");
 const FlightQuerySave = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().split('T')[0];
         const query = yield new query_model_1.QueryModel({
             client: req.body.client,
             serviceType: req.body.serviceType,
@@ -33,7 +35,8 @@ const FlightQuerySave = (req, res) => __awaiter(void 0, void 0, void 0, function
             arrivalTime: req.body.arrivalTime,
             ourCost: req.body.ourCost,
             prf: req.body.prf,
-            refundable: req.body.refundable
+            refundable: req.body.refundable,
+            bookingDate: formattedDate,
         });
         console.log(query);
         yield query.save().then((result) => {
@@ -49,6 +52,33 @@ const FlightQuerySave = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.FlightQuerySave = FlightQuerySave;
+const FlightQueryConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const queryId = req.params.id;
+        yield query_model_1.QueryModel.findOneAndUpdate({ _id: queryId }, {
+            passengerName: req.body.passengerName,
+            gender: req.body.gender,
+            pnrNumber: req.body.pnrNumber,
+            seatNumber: req.body.seatNumber,
+            class: req.body.class,
+            meal: req.body.meal,
+            invoiceNumber: req.body.invoiceNumber,
+            vendorName: req.body.vendorName,
+            status: 1,
+        })
+            .then((result) => {
+            console.log(result);
+            return res.status(200).json({ message: "Query Saved Successfully", result: result });
+        }).catch((error) => {
+            console.log(error);
+            return res.status(500).json({ message: error });
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ message: error });
+    }
+});
+exports.FlightQueryConfirmed = FlightQueryConfirmed;
 const getFlightQueries = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const queries = yield query_model_1.QueryModel.find({ serviceType: "Flight" });

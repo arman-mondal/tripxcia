@@ -26,5 +26,15 @@ const QuerySchema = new mongoose_1.default.Schema({
     ourCost: { type: Number, required: false },
     prf: { type: Number, required: false },
     refundable: { type: Boolean, required: false },
+    passengerName: { type: String, required: false },
+    gender: { type: String, required: false },
+    pnrNumber: { type: String, required: false },
+    seatNumber: { type: String, required: false },
+    class: { type: String, required: false },
+    meal: { type: Boolean, required: false },
+    invoiceNumber: { type: String, required: false },
+    vendorName: { type: String, required: false },
+    status: { type: Number, required: false },
+    bookingDate: { type: String, required: false },
 });
 exports.QueryModel = mongoose_1.default.model('Query', QuerySchema);

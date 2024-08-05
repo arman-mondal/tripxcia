@@ -43,6 +43,7 @@ import { airports } from "@/data/airports";
 import TableFlightQuery from "@/components/TableFlightQuery";
 import makeRequest from "@/data/api";
 import { SaveFlight } from "@/data/apis";
+import { useGlobalData } from "@/hooks/GlobalData";
 const steps = [
   { title: 'Step 1', description: 'Contact Info' },
   { title: 'Step 2', description: 'Date & Time' },
@@ -50,11 +51,7 @@ const steps = [
   { title: 'Step 4', description: 'Select Rooms' },
 
 ]
-const clients = [
 
-  { value: "Arman Mondal", label: "Arman Mondal" },
-  { value: "Test", label: "Test" },
-];
 const services=[
 
   { value: "Flight", label: "Flight" },
@@ -63,6 +60,7 @@ const services=[
 
 ]
 export default function GenarateQuery() {
+  const {clients}=useGlobalData()
   const [currentStep, setCurrentStep] = useState(0)
   const { activeStep } = useSteps({
     index: currentStep,
@@ -230,7 +228,7 @@ const firstStepHandle=()=>{
                    onChange={(e)=>setdata({...data,client:e.value})}
    
                    isSearchable={true}
-                   options={clients}
+                   options={clients.map((client)=>({value:client.name,label:client.name}))}
                />
       </FormControl>
       <FormControl>
