@@ -102,6 +102,87 @@ export default function GenarateQuery() {
 
 
   })
+  const hotelForm=[
+    {
+      label:'Domestic / International',
+      id:'domesticOrInternational',
+      type:'text'
+    },
+    
+    {
+      label:'City',
+      id:'city',
+      type:'text'
+    },
+    {
+      label:'Hotel Name',
+      id:'hotelName',
+      type:'text'
+    },
+    {
+      label:'Check In Date',
+      id:'checkInDate',
+      type:'date'
+
+    },
+    {
+      label:'Check Out Date',
+      id:'checkOutDate',
+      type:'date'
+
+    },
+    {
+      label:'No of Nights',
+      id:'noOfNights',
+      type:'number'
+
+    },
+    {
+      label:'Meal Plan',
+      type:'select',
+      id:'mealPlan',
+      options:['Only Room','Room With Breakfast','Room + Breakfast + Lunch or Dinner','Room + Breakfast + Lunch + Dinner']
+    },
+    {
+      label:'Hotel Category',
+      id:'hotelCategory',
+      type:'select',
+      options:['5 Star','4 Star','3 Star','2 Star','1 Star'],
+
+
+    },
+    {
+      label:'Room Ocuppency',
+      id:'roomOcuppency',
+      type:'select',
+      options:['Single','Double','Triple','Quad']
+    },
+    {
+      label:'No of Rooms',  
+      id:'noOfRooms',
+      type:'number'
+    },
+    {
+      label:'No of Guests',  
+      id:'noOfGuests',
+      type:'number'
+    },
+    {
+      label:'No of Adults',
+      id:'noOfAdults',
+      type:'number'
+    },
+    {
+      label:'No of Kids (1-6 Years)',
+      id:'noOfChildren6',
+      type:'number'
+    },{
+      label:'No of Kids (7-12 Years)',
+      id:'noOfChildren12',
+      type:'number'
+    }
+
+  ]
 
   const handleFlightSubmit=async()=>{
     const body={
@@ -396,11 +477,66 @@ const firstStepHandle=()=>{
 
       </>
     )
-    :(
+    :data.service==='Hotel'?
+    (
       <>
+      <Box p={4}>
+       <form>
+       <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+          {hotelForm.map((item)=>(
+            <FormControl>
+              <FormLabel>{item.label}</FormLabel>
+              {
+                item.type==='select'?
+                (
+                  <NormalSelect  
+                  >
+                    <option selected disabled value={''}>Select</option>
+                    {item.options.map((option)=>(
+                      <option value={option}>{option}</option>
+                    ))}
+                  </NormalSelect>
+                )
+                :
+                (
+                  <Input type={item.type} placeholder={'Enter '+item.label} id={item.id} onChange={(e)=>{
+                      const calculateTotalDays=(checkInDate,checkOutDate)=>{
+                        const checkIn=new Date(checkInDate)
+                        const checkOut=new Date(checkOutDate)
+                        const diffTime=Math.abs(checkOut-checkIn)
+                        const diffDays=Math.ceil(diffTime/(1000*60*60*24))
+                        return diffDays
+                      }
+                     
+                      if(item.id==='checkInDate'&&data.checkOutDate){
+                       const a= document.getElementById('noOfNights');
+                       a.value=calculateTotalDays(e.target.value,data.checkOutDate).toString()
+                      }
+                    
+                      
+                    
+                   
+                  }
+                  } />
+                )
+              }
+
+            </FormControl>
+          
+          ))}
+          </Grid>
+       </form>
+
+      </Box>
       </>
     
-   )}
+    )
+    
+    
+    :(
+     <>
+     </> 
+    )}
 
       <FormControl>
        <Button onClick={firstStepHandle}>Next</Button>
