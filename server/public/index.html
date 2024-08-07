@@ -14,6 +14,9 @@
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th scope="col" class="px-6 py-3">
+                    SL
+                 </th>
+                <th scope="col" class="px-6 py-3">
                    ID
                 </th>
                 <th scope="col" class="px-6 py-3">
@@ -59,9 +62,12 @@
                     let logs = data.logs;
                     let tbody = document.querySelector('tbody');
                     tbody.innerHTML = '';
-                    logs.forEach(log => {
+                    logs.forEach((log,index) => {
                         let tr = document.createElement('tr');
                         tr.innerHTML = `
+                         <td class="px-6 py-4 whitespace-nowrap">
+                                ${index+1}
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 ${log._id}
                             </td>
