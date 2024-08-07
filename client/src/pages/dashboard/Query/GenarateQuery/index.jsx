@@ -647,11 +647,7 @@ const firstStepHandle=()=>{
     
          formatOptionLabel={
           ({label,city})=>(
-<<<<<<< HEAD
-           <Stack divider={<StackDivider />} spacing='2' cursor={'pointer'} my={5}>
-=======
            <Stack divider={<StackDivider />} spacing='2' flexDir={'row'} justifyContent={'space-between'} cursor={'pointer'} my={5}>
->>>>>>> e0060aa (Changes to be committed:)
              <Box>
         <Heading size='xs' textTransform='uppercase'>
           {city}
@@ -660,14 +656,11 @@ const firstStepHandle=()=>{
         {label}
         </Text>
       </Box>
-<<<<<<< HEAD
-=======
       <Box>
         <Text pt='2'  fontWeight={'bold'} fontSize='sm'>
           {airports.find((item)=>item.name===label).code}
         </Text>
       </Box>
->>>>>>> e0060aa (Changes to be committed:)
             </Stack>
           )
          } options={airports.map((airport)=>({value:airport.name,label:airport.name,city:airport.city}))} value={{value:data.departureFrom,label:data.departureFrom,city:data.departureFrom}} onChange={(e)=>{
@@ -687,18 +680,6 @@ const firstStepHandle=()=>{
     
     formatOptionLabel={
      ({label,city})=>(
-<<<<<<< HEAD
-      <Stack divider={<StackDivider />} spacing='2' cursor={'pointer'} my={5}>
-        <Box>
-   <Heading size='xs' textTransform='uppercase'>
-     {city}
-   </Heading>
-   <Text pt='2' fontSize='sm'>
-   {label}
-   </Text>
- </Box>
-       </Stack>
-=======
       <Stack divider={<StackDivider />} spacing='2' flexDir={'row'} justifyContent={'space-between'} cursor={'pointer'} my={5}>
       <Box>
  <Heading size='xs' textTransform='uppercase'>
@@ -714,7 +695,6 @@ const firstStepHandle=()=>{
  </Text>
 </Box>
      </Stack>
->>>>>>> e0060aa (Changes to be committed:)
      )
     } options={airports.map((airport)=>({value:airport.name,label:airport.name,city:airport.city}))}
     value={{value:data.arrivalTo,label:data.arrivalTo,city:data.arrivalTo}} onChange={(e)=>{
