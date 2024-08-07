@@ -22,7 +22,10 @@ import {
   FormControl,
   FormLabel,
   Grid,
+  Heading,
   Select as NormalSelect,
+  Stack,
+  StackDivider,
   StepDescription,
   StepIcon,
   StepIndicator,
@@ -30,6 +33,7 @@ import {
   StepSeparator,
   StepStatus,
   StepTitle,
+  Text,
   useSteps,
 } from '@chakra-ui/react'
 import { useState } from "react";
@@ -74,8 +78,8 @@ export default function GenarateQuery() {
     passengerNumber:0,
     domesticOrInternational:'',
     oneWayOrRoundway:'',
-    from:'',
-    to:'',
+    from:'Select From Location',
+    to:'Select To Location',
     departureDate:'',
     cabType:'',
     timeSlot:'',
@@ -355,16 +359,53 @@ const firstStepHandle=()=>{
         </FormControl>
         <FormControl>
          <FormLabel>From (Location)</FormLabel>
-         <Input type="text" placeholder="From (Location)"  value={data.from} onChange={(e)=>{
+         {/* <Input type="text" placeholder="From (Location)"  value={data.from} onChange={(e)=>{
             setdata({...data,from:e.target.value})
-         }}/>
+         }}/> */}
+         <Select 
+          searchInputPlaceholder="Search for a City Name"
+          placeholder="From (Location)"
+          formatOptionLabel={
+            ({label})=>(
+              <Stack divider={<StackDivider />} spacing='2' cursor={'pointer'} my={5}>
+                <Box>
+            <Heading size='xs' textTransform='uppercase'>
+              {label}
+            </Heading>
+       
+          </Box>
+              </Stack>
+            )
+          } options={airports.map((airport)=>({value:airport.city,label:airport.city}))} value={{value:data.from,label:data.from}} onChange={(e)=>{
+            setdata({...data,from:e.value})
+          }
+          } isSearchable={true} />
+
         </FormControl>
         <FormControl>
          <FormLabel>To (Location)</FormLabel>
-         <Input type="text" placeholder="To (Location)" value={data.to} onChange={(e)=>{
+         {/* <Input type="text" placeholder="To (Location)" value={data.to} onChange={(e)=>{
             setdata({...data,to:e.target.value})
-         }} />
-   
+         }} /> */}
+     <Select 
+          searchInputPlaceholder="Search for a City Name"
+          placeholder="To (Location)"
+          formatOptionLabel={
+            ({label})=>(
+              <Stack divider={<StackDivider />} spacing='2' cursor={'pointer'} my={5}>
+                <Box>
+            <Heading size='xs' textTransform='uppercase'>
+              {label}
+            </Heading>
+       
+          </Box>
+              </Stack>
+            )
+          } options={airports.map((airport)=>({value:airport.city,label:airport.city}))} value={{value:data.to,label:data.to}} onChange={(e)=>{
+            setdata({...data,to:e.value})
+          }
+          } isSearchable={true} />
+
         </FormControl>
         <FormControl>
          <FormLabel>Departure Date</FormLabel>
@@ -601,7 +642,23 @@ const firstStepHandle=()=>{
         </FormControl>
         <FormControl>
          <FormLabel>Departure From</FormLabel>
-         <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:data.departureFrom,label:data.departureFrom}} onChange={(e)=>{
+         <Select 
+         searchInputPlaceholder="Search for a Airport Name"
+    
+         formatOptionLabel={
+          ({label,city})=>(
+           <Stack divider={<StackDivider />} spacing='2' cursor={'pointer'} my={5}>
+             <Box>
+        <Heading size='xs' textTransform='uppercase'>
+          {city}
+        </Heading>
+        <Text pt='2' fontSize='sm'>
+        {label}
+        </Text>
+      </Box>
+            </Stack>
+          )
+         } options={airports.map((airport)=>({value:airport.name,label:airport.name,city:airport.city}))} value={{value:data.departureFrom,label:data.departureFrom,city:data.departureFrom}} onChange={(e)=>{
           setdata({...data,departureFrom:e.value})
         }
         } isSearchable={true} />
@@ -614,7 +671,23 @@ const firstStepHandle=()=>{
         </FormControl>
         <FormControl>
          <FormLabel>Arrival To</FormLabel>
-        <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:data.arrivalTo,label:data.arrivalTo}} onChange={(e)=>{
+        <Select searchInputPlaceholder="Search for a Airport Name"
+    
+    formatOptionLabel={
+     ({label,city})=>(
+      <Stack divider={<StackDivider />} spacing='2' cursor={'pointer'} my={5}>
+        <Box>
+   <Heading size='xs' textTransform='uppercase'>
+     {city}
+   </Heading>
+   <Text pt='2' fontSize='sm'>
+   {label}
+   </Text>
+ </Box>
+       </Stack>
+     )
+    } options={airports.map((airport)=>({value:airport.name,label:airport.name,city:airport.city}))}
+    value={{value:data.arrivalTo,label:data.arrivalTo,city:data.arrivalTo}} onChange={(e)=>{
           setdata({...data,arrivalTo:e.value})
         }
         } isSearchable={true} />

@@ -123,7 +123,11 @@ export default function AddVendor() {
             await makeRequest({
               method:'POST',
               url:CreateVendor,
-              data:body
+              data:body,
+              headers:{
+                'Content-Type':'application/json',
+                'Authorization:Bearer':localStorage.getItem('token')
+              }
             })
           .then((response)=>{
               Swal.fire({

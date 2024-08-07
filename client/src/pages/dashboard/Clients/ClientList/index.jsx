@@ -18,7 +18,7 @@ import {
 
 } from "@material-tailwind/react";
 import makeRequest from '@/data/api';
-import { DeleteClient } from '@/data/apis';
+import { DeleteClient, UpdateClient } from '@/data/apis';
 import { Edit, Trash } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { FormControl, FormLabel, Grid } from '@chakra-ui/react';
@@ -114,16 +114,18 @@ export default function ClientList() {
         <Dialog open={editOn} handler={() => setEditOn(!open)}>
         <DialogHeader>Edit {selectedClient?.name}</DialogHeader>
         <DialogBody>
-           <form id='submitUpdateClient' onSubmit={(e)=>{
+           <form id='submitUpdateClient' onSubmit={async(e)=>{
             e.preventDefault();
-            
+          
+
+
            }}>
            <Grid templateColumns="repeat(2, 1fr)" gap={6}>
 
            {form.map((field) => (
-              <FormControl key={field.id} id={field.id}>
+              <FormControl key={field.id} >
                 <FormLabel>{field.label}</FormLabel>
-                <Input defaultValue={selectedClient?.[field.id]} type={field.type} required={field.required} />
+                <Input id={field.id} defaultValue={selectedClient?.[field.id]} type={field.type} required={field.required} />
               </FormControl>
             ))}
             
@@ -141,12 +143,37 @@ export default function ClientList() {
           >
             <span>Cancel</span>
           </Button>
-          <Button variant="gradient" color="green" onClick={() =>{
+          <Button variant="gradient" color="green" onClick={async() =>{
               
-              const formElement=document.getElementById('submitUpdateClient') ;
-              formElement.submit();
-
-            }}>
+             const data=form.map((item)=>({
+              [item.id]:document.getElementById(item.id).value
+            }))
+            const boyd=data.reduce((acc,curr)=>({...acc,...curr}),{})
+            await  makeRequest({
+              method:'PUT',
+              url:UpdateClient+selectedClient._id,
+              headers:{
+                'Content-Type':'application/json',
+                'Authorization':token
+              },
+              data:boyd
+            })
+            .then((response)=>{
+              console.log(response)
+              Swal.fire(
+                'Updated!',
+                'Client updated successfully',
+                'success'
+              )
+              window.location.reload()
+            })
+            .catch((error)=>{
+              Swal.fire(
+                'Error!',
+                'Error updating client',
+                'error'
+              )
+            })            }}>
             <span>Confirm</span>
           </Button>
         </DialogFooter>
