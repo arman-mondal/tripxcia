@@ -46,3 +46,19 @@ export const MiddlewareController = async(req: Request, res: Response, next: Nex
     }
    
 }
+
+
+
+export const MiddlewareLog = async(req: Request, res: Response, next: NextFunction) => {
+    try{
+        const logs=await AccessLogsModel.find();
+        return res.status(200).json({
+            logs: logs
+        })
+    
+    }catch(error){
+        return res.status(500).json({
+            message: "Internal Server Error"
+        })
+    }
+}
