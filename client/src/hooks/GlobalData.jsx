@@ -1,5 +1,5 @@
 import makeRequest from '@/data/api';
-import { GetClients, GetFlightQueries, GetVendors,AuthLoginAPI } from '@/data/apis';
+import { GetClients, GetFlightQueries, GetVendors,AuthLoginAPI, getAllQueries } from '@/data/apis';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
@@ -16,12 +16,14 @@ export const GlobalDataProvider = ({ children }) => {
     const [FlightQuery, setFlightQuery] = useState([]);
     const [clients, setclients] = useState([]);
     const [vendors, setvendors] = useState([]);
+    const [queries, setqueries] = useState([]);
     const navigate=useNavigate();
     const token="Bearer "+localStorage.getItem('token')
     useEffect(()=>{
         fetchFlightQuery();
         fetchClients();
         fetchVendors();
+        fetchAllQueries();
 
     },[])
     const fetchFlightQueryById=(id)=>{
@@ -132,6 +134,38 @@ return navigate('/auth/signin')           }
         }
 
     };
+    const fetchAllQueries=async()=>{
+        try {
+            await makeRequest({
+                url:getAllQueries,
+                method:'GET',
+                headers:{
+                    'Content-Type':'application/json',
+                    'Authorization':token
+                }
+
+            })
+            .then((response)=>{
+                console.log(response)
+                setqueries(response.result)
+            }
+            )
+            .catch((error)=>{
+                if (error.response && error.response.status === 403) {
+                    toast.error('Token expired');
+                } else {
+                    return navigate('/auth/signin')  
+                }
+            })
+
+            
+        } catch (error) {
+            toast.error('Error fetching flight query')
+            return navigate('/auth/signin')
+
+        }
+            
+        }
     const AuthLogin=async(data)=>{
         try {
             const {email,password}=data;
@@ -173,7 +207,7 @@ return navigate('/auth/signin')           }
 
     // Provide the global data and update function to the children components
     return (
-        <GlobalDataContext.Provider value={{ FlightQuery,fetchFlightQueryById ,clients,vendors,user,AuthLogin,token}}>
+        <GlobalDataContext.Provider value={{ FlightQuery,fetchFlightQueryById ,clients,vendors,user,AuthLogin,token,queries}}>
             {children}
         </GlobalDataContext.Provider>
     );
