@@ -1,3 +1,4 @@
+import { useGlobalData } from "@/hooks/GlobalData";
 import {
   Card,
   Input,
@@ -5,10 +6,20 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 
 export function SignIn() {
+  const {AuthLogin}=useGlobalData();
+  const [data,setdata]=useState({
+    email:'',
+    password:''
+  });
+  const handleChange=(e)=>{
+    setdata({...data,[e.target.name]:e.target.value})
+  }
+  
   return (
     <section className="m-8 flex gap-4 max-h-[100vh] ">
       <div className="w-full lg:w-3/5 mt-24">
@@ -16,15 +27,18 @@ export function SignIn() {
           <Typography variant="h2" className="font-bold mb-4">Sign In</Typography>
           <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to Sign In.</Typography>
         </div>
-        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2">
+        <div  className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2">
           <div className="mb-1 flex flex-col gap-6">
             <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
               Your email
             </Typography>
             <Input
               size="lg"
+              value={data.email}
+              onChange={handleChange}
               placeholder="name@mail.com"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+              name="email"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -35,6 +49,9 @@ export function SignIn() {
             <Input
               type="password"
               size="lg"
+              value={data.password}
+              name="password"
+              onChange={handleChange}
               placeholder="********"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
               labelProps={{
@@ -44,14 +61,16 @@ export function SignIn() {
           </div>
          
           
-          <Button className="mt-6" fullWidth>
+          <Button onClick={async()=>{
+           await AuthLogin(data)
+          }} className="mt-6" fullWidth>
             Sign In
           </Button>
 
           
         
         
-        </form>
+        </div>
 
       </div>
       <div className="w-2/5 h-full hidden lg:block">

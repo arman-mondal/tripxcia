@@ -118,7 +118,8 @@ import {
 
     })
 
-  
+    const {}=useGlobalData()
+
     const handleFlightSubmit=async()=>{
       const body={
      
@@ -129,7 +130,10 @@ import {
       method:'PUT',
       url:`${ConfirmFlightQuery}${QueryID}`,
       data:thirdStepData
-  
+ ,
+headers:{
+  Authorization:token
+} 
      })
       .then((response)=>{
         if(response){

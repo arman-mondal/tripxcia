@@ -34,7 +34,6 @@ export const MiddlewareController = async(req: Request, res: Response, next: Nex
           
         }
         await AccessLogsModel.create(log);
-        console.log(req)
 
         next();
 

@@ -1,7 +1,8 @@
 import makeRequest from '@/data/api';
-import { GetClients, GetFlightQueries, GetVendors } from '@/data/apis';
+import { GetClients, GetFlightQueries, GetVendors,AuthLoginAPI } from '@/data/apis';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 // Create a new context for the global data
 const GlobalDataContext = createContext();
@@ -11,10 +12,12 @@ export const useGlobalData = () => useContext(GlobalDataContext);
 
 // Global data provider component
 export const GlobalDataProvider = ({ children }) => {
-    // Define your global data state here
+    const [user,setuser]=useState(null);
     const [FlightQuery, setFlightQuery] = useState([]);
     const [clients, setclients] = useState([]);
     const [vendors, setvendors] = useState([]);
+    const navigate=useNavigate();
+    const token="Bearer "+localStorage.getItem('token')
     useEffect(()=>{
         fetchFlightQuery();
         fetchClients();
@@ -30,6 +33,8 @@ export const GlobalDataProvider = ({ children }) => {
             
         } catch (error) {
             toast.error('Error fetching flight query')
+            return navigate('/auth/signin')
+
         }
     }
 
@@ -40,7 +45,8 @@ export const GlobalDataProvider = ({ children }) => {
                 url:GetFlightQueries,
                 method:'GET',
                 headers:{
-                    'Content-Type':'application/json'
+              'Content-Type':'application/json',
+                    'Authorization':token
                 }
 
             })
@@ -50,7 +56,11 @@ export const GlobalDataProvider = ({ children }) => {
             }
             )
             .catch((error)=>{
-                toast.error('Error fetching flight query')
+                if (error.response && error.response.status === 403) {
+                    toast.error('Token expired');
+                } else {
+                    return navigate('/auth/signin')  
+                }
             })
 
             
@@ -65,7 +75,8 @@ export const GlobalDataProvider = ({ children }) => {
                 url:GetClients,
                 method:'GET',
                 headers:{
-                    'Content-Type':'application/json'
+                    'Content-Type':'application/json',
+                    'Authorization':token
                 }
 
             })
@@ -75,12 +86,18 @@ export const GlobalDataProvider = ({ children }) => {
             }
             )
             .catch((error)=>{
-                toast.error('Error fetching flight query')
+                if (error.response && error.response.status === 403) {
+                    toast.error('Token expired');
+                } else {
+                    return navigate('/auth/signin')           
+                }
             })
 
             
         } catch (error) {
-            toast.error('Error fetching flight query')
+            toast.error('Error fetching flight query');
+            return navigate('/auth/signin');
+
         }
 
     };
@@ -90,7 +107,8 @@ export const GlobalDataProvider = ({ children }) => {
                 url:GetVendors,
                 method:'GET',
                 headers:{
-                    'Content-Type':'application/json'
+                    'Content-Type':'application/json',
+                    'Authorization':token
                 }
 
             })
@@ -100,21 +118,62 @@ export const GlobalDataProvider = ({ children }) => {
             }
             )
             .catch((error)=>{
-                toast.error('Error fetching flight query')
+                if (error.response && error.response.status === 403) {
+                    toast.error('Token expired');
+                } else {
+return navigate('/auth/signin')           }
             })
 
             
         } catch (error) {
             toast.error('Error fetching flight query')
+            return navigate('/auth/signin')
+
         }
 
     };
+    const AuthLogin=async(data)=>{
+        try {
+            const {email,password}=data;
+            await makeRequest({
+                url:AuthLoginAPI,
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json',
+
+                },
+                data:{
+                    email,
+                    password
+                }
+            })
+            .then((response)=>{
+                console.log(response)
+                setuser(response)
+                localStorage.setItem('token',response.token)
+                return navigate('/dashboard/home')
+            })
+            .catch((error)=>{
+                toast.error('Invalid Credentials')
+                return navigate('/auth/signin')
+
+            })
+
+           
+        } catch (error) {
+            toast.error('Invalid Credentials')
+            return navigate('/auth/signin')
+
+        }
+
+    }
+    
     // Define any functions or methods to update the global data here
 
 
     // Provide the global data and update function to the children components
     return (
-        <GlobalDataContext.Provider value={{ FlightQuery,fetchFlightQueryById ,clients,vendors}}>
+        <GlobalDataContext.Provider value={{ FlightQuery,fetchFlightQueryById ,clients,vendors,user,AuthLogin,token}}>
             {children}
         </GlobalDataContext.Provider>
     );

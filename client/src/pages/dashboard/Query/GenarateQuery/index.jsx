@@ -183,7 +183,7 @@ export default function GenarateQuery() {
     }
 
   ]
-
+const {token}=useGlobalData()
   const handleFlightSubmit=async()=>{
     const body={
       client:data?.client,
@@ -212,7 +212,10 @@ export default function GenarateQuery() {
    await makeRequest({
     method:'POST',
     url:`${SaveFlight}`,
-    data:body
+    data:body,
+    headers:{
+      Authorization:token
+    } 
 
    })
     .then((response)=>{

@@ -20,7 +20,7 @@ export default function Invoice() {
 <div className='w-full h-max flex justify-center items-center '>
 {data && (
     <>
-    <style jsx>{`
+    <style jsx={true}>{`
     .invoice {
     padding: 8px;
     font-size: 17px;

@@ -12,3 +12,4 @@ export const GetVendors=API_URL+"vendors/get";
 export const DeleteVendor=API_URL+"vendors/delete/";
 export const UpdateVendor=API_URL+"vendors/update/";
 export const GetVendorById=API_URL+"vendors/get/";
+export const AuthLoginAPI=API_URL+"auth/login";

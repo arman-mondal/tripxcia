@@ -18,6 +18,7 @@ import makeRequest from "@/data/api";
 import { CreateClient } from "@/data/apis";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import { useGlobalData } from "@/hooks/GlobalData";
 
 export default function AddClient() {
   const form=[
@@ -102,6 +103,7 @@ export default function AddClient() {
 
 
   ]
+  const {token}=useGlobalData()
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <Card>
@@ -122,7 +124,11 @@ export default function AddClient() {
             await makeRequest({
               method:'POST',
               url:CreateClient,
-              data:body
+              data:body,
+              headers:{
+                'Content-Type':'application/json',
+                Authorization:token
+              }
             })
           .then((response)=>{
               Swal.fire({
