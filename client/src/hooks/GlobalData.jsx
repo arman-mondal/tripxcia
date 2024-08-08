@@ -28,7 +28,7 @@ export const GlobalDataProvider = ({ children }) => {
     },[])
     const fetchFlightQueryById=(id)=>{
         try {
-          const Query=FlightQuery.find((query)=>query._id===id);
+          const Query=queries.find((query)=>query._id===id);
             return Query;
 
 

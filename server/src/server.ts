@@ -28,10 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 const port = process.env.PORT || 3000;
 
 app.use('/', Router);
-app.get('/system',(req:Request,res:Response)=>{
 
-  res.status(200).json(fs.readFileSync('log.json','utf-8'));
-})
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });

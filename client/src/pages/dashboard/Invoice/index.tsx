@@ -130,16 +130,41 @@ body {
     
     <h3>Onward</h3>
     <p> Flight No - </p>
-        {data?.flightNumber}<br></br>
-        Departure Date: {data?.DepartureDate}<br></br>
+       {
+        data.serviceType==='Flight' ? (
+            <>
+            <p>From - {data?.from}</p>
+            <p>To - {data?.to}</p>
+            <p>Departure - {data?.departure}</p>
+            <p>Arrival - {data?.arrival}</p>
+            </>
+        )
+        :
+        data?.serviceType==='Hotel' ?(
+           <>
+              <p>Check In - {data?.checkInDate}</p>
+                <p>Check Out - {data?.checkOutDate}</p>
+                <p>Rooms - {data?.noOfRooms}</p>
+                <p>Adults - {data?.noOfAdults}</p>
+
+           
+           </>
+        )
+        :
+        (
+            <></>
+        )
+
+
+    }
 
     
         Pax - 1   
         <h4 style={{ float: 'right' }}> </h4><br></br>
 
         <h4 style={{ float: 'right' }}>Management Fee</h4><br></br>
-        <h4 style={{ float: 'right' }}>CGST 9%</h4><br></br>
-         <h4 style={{ float: 'right' }}>SGST 9%</h4>    
+        <h4 style={{ float: 'right' }}>CGST 18%</h4><br></br>
+         <h4 style={{ float: 'right' }}>SGST 18%</h4>    
 
  </td>
         <td align="right">{(Number(data?.ourCost)).toFixed(2)}<br></br>
@@ -169,10 +194,10 @@ body {
 </tr>
 <tr>
     <td align="center"><h3>Total Amount</h3></td>
-    <td align="right"><h3>{((Number(data?.ourCost)+Number(data?.prf)) + ((data?.prf * 0.09)*2)).toFixed(2)}</h3></td>
+    <td align="right"><h3>{((Number(data?.ourCost)+Number(data?.prf)) + ((data?.prf * 0.18)*2)).toFixed(2)}</h3></td>
 </tr>
 <tr>
-    <td><h4>Amount in words - {toWords(((Number(data?.ourCost)+Number(data?.prf)) + ((data?.prf * 0.09)*2)).toFixed(2))} Only</h4></td>
+    <td><h4>Amount in words - {toWords(((Number(data?.ourCost)+Number(data?.prf)) + ((data?.prf * 0.18)*2)).toFixed(2))} Only</h4></td>
 </tr>
 </tbody>
 </table>

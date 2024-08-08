@@ -46,7 +46,7 @@ import { airlines } from "@/data/airlines";
 import { airports } from "@/data/airports";
 import TableFlightQuery from "@/components/TableFlightQuery";
 import makeRequest from "@/data/api";
-import { SaveFlight } from "@/data/apis";
+import { SaveFlight, SaveHotel } from "@/data/apis";
 import { useGlobalData } from "@/hooks/GlobalData";
 const steps = [
   { title: 'Step 1', description: 'Contact Info' },
@@ -55,7 +55,88 @@ const steps = [
   { title: 'Step 4', description: 'Select Rooms' },
 
 ]
+export const hotelForm=[
+  {
+    label:'Domestic / International',
+    id:'DomesticOrInternational',
+    type:'select',
+    options:['Domestic','International']
+  },
+  
+  {
+    label:'City',
+    id:'city',
+    type:'text'
+  },
+  {
+    label:'Hotel Name',
+    id:'hotelName',
+    type:'text'
+  },
+  {
+    label:'Check In Date',
+    id:'checkInDate',
+    type:'date'
 
+  },
+  {
+    label:'Check Out Date',
+    id:'checkOutDate',
+    type:'date'
+
+  },
+  {
+    label:'No of Nights',
+    id:'noOfNights',
+    type:'number'
+
+  },
+  {
+    label:'Meal Plan',
+    type:'select',
+    id:'mealPlan',
+    options:['Only Room','Room With Breakfast','Room + Breakfast + Lunch or Dinner','Room + Breakfast + Lunch + Dinner']
+  },
+  {
+    label:'Hotel Category',
+    id:'hotelCategory',
+    type:'select',
+    options:['5 Star','4 Star','3 Star','2 Star','1 Star'],
+
+
+  },
+  {
+    label:'Room Ocuppency',
+    id:'roomOcuppency',
+    type:'select',
+    options:['Single','Double','Triple','Quad']
+  },
+  {
+    label:'No of Rooms',  
+    id:'noOfRooms',
+    type:'number'
+  },
+  {
+    label:'No of Guests',  
+    id:'noOfGuests',
+    type:'number'
+  },
+  {
+    label:'No of Adults',
+    id:'noOfAdults',
+    type:'number'
+  },
+  {
+    label:'No of Kids (1-6 Years)',
+    id:'noOfChildren6',
+    type:'number'
+  },{
+    label:'No of Kids (7-12 Years)',
+    id:'noOfChildren12',
+    type:'number'
+  }
+
+]
 const services=[
 
   { value: "Flight", label: "Flight" },
@@ -106,87 +187,8 @@ export default function GenarateQuery() {
 
 
   })
-  const hotelForm=[
-    {
-      label:'Domestic / International',
-      id:'domesticOrInternational',
-      type:'text'
-    },
-    
-    {
-      label:'City',
-      id:'city',
-      type:'text'
-    },
-    {
-      label:'Hotel Name',
-      id:'hotelName',
-      type:'text'
-    },
-    {
-      label:'Check In Date',
-      id:'checkInDate',
-      type:'date'
+  
 
-    },
-    {
-      label:'Check Out Date',
-      id:'checkOutDate',
-      type:'date'
-
-    },
-    {
-      label:'No of Nights',
-      id:'noOfNights',
-      type:'number'
-
-    },
-    {
-      label:'Meal Plan',
-      type:'select',
-      id:'mealPlan',
-      options:['Only Room','Room With Breakfast','Room + Breakfast + Lunch or Dinner','Room + Breakfast + Lunch + Dinner']
-    },
-    {
-      label:'Hotel Category',
-      id:'hotelCategory',
-      type:'select',
-      options:['5 Star','4 Star','3 Star','2 Star','1 Star'],
-
-
-    },
-    {
-      label:'Room Ocuppency',
-      id:'roomOcuppency',
-      type:'select',
-      options:['Single','Double','Triple','Quad']
-    },
-    {
-      label:'No of Rooms',  
-      id:'noOfRooms',
-      type:'number'
-    },
-    {
-      label:'No of Guests',  
-      id:'noOfGuests',
-      type:'number'
-    },
-    {
-      label:'No of Adults',
-      id:'noOfAdults',
-      type:'number'
-    },
-    {
-      label:'No of Kids (1-6 Years)',
-      id:'noOfChildren6',
-      type:'number'
-    },{
-      label:'No of Kids (7-12 Years)',
-      id:'noOfChildren12',
-      type:'number'
-    }
-
-  ]
 const {token}=useGlobalData()
   const handleFlightSubmit=async()=>{
     const body={
@@ -236,9 +238,42 @@ const {token}=useGlobalData()
     )
 
   }
+  const handleHotelQuery=async()=>{
+    const body=hotelForm.map((item)=>({
+      [item.id]:document.getElementById(item.id).value
+    }));
+    const mainBody=body.reduce((acc,curr)=>({...acc,...curr}),{})
 
+ 
+    
+
+    console.log(body)
+   await makeRequest({
+    method:'POST',
+    url:`${SaveHotel}`,
+    data:{...mainBody,client:data.client,serviceType:data.service},
+    headers:{
+      Authorization:token
+    } 
+
+   })
+    .then((response)=>{
+      if(response){
+        toast.success('Query Genarated Successfully')
+      }
+      else{
+        toast.error('Failed to genarate query')
+      }
+    })
+    .catch((error)=>{
+      toast.error('Failed to genarate query')
+    }
+    )
+
+  }
 
 const firstStepHandle=()=>{
+ if(data.service==='Flight'){
   if(data.client==='Select'){
     toast.error('Please select client')
     return
@@ -267,6 +302,10 @@ const firstStepHandle=()=>{
 
 
   }
+}
+if(data.service==='Hotel'){
+  handleHotelQuery()
+}
 }
 
 
@@ -525,7 +564,10 @@ const firstStepHandle=()=>{
     (
       <>
       <Box p={4}>
-       <form>
+       <form onSubmit={(e)=>{
+        e.preventDefault();
+        handleHotelQuery()
+       }}>
        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
           {hotelForm.map((item)=>(
             <FormControl>
@@ -534,6 +576,7 @@ const firstStepHandle=()=>{
                 item.type==='select'?
                 (
                   <NormalSelect  
+                  id={item.id}
                   >
                     <option selected disabled value={''}>Select</option>
                     {item.options.map((option)=>(

@@ -14,3 +14,6 @@ export const UpdateVendor=API_URL+"vendors/update/";
 export const GetVendorById=API_URL+"vendors/get/";
 export const AuthLoginAPI=API_URL+"auth/login";
 export const getAllQueries=API_URL+"query";
+export const SaveHotel=API_URL+"query/hotel/save";
+export const FindQuerybYid=API_URL+"query/";
+export const ConfirmHotelQuery=API_URL+"query/hotel/confirm/";

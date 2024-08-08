@@ -32,7 +32,7 @@ import {
     StepTitle,
     useSteps,
   } from '@chakra-ui/react'
-  import { useState } from "react";
+  import { useEffect, useState } from "react";
   import Select from "react-tailwindcss-select";
   import { Form, useParams } from "react-router-dom";
   import FlightExtraForm from "@/components/FlightExtraForm";
@@ -42,13 +42,65 @@ import {
   import { airports } from "@/data/airports";
   import TableFlightQuery from "@/components/TableFlightQuery";
   import makeRequest from "@/data/api";
-  import { ConfirmFlightQuery, SaveFlight } from "@/data/apis";
+  import { useGlobalData } from "@/hooks/GlobalData";
+  import { ConfirmFlightQuery, ConfirmHotelQuery, FindQuerybYid, getAllQueries, SaveFlight } from "@/data/apis";
+import { hotelForm } from "../GenarateQuery";
   const steps = [
     { title: 'Step 1', description: 'Contact Info' },
     { title: 'Step 2', description: 'Date & Time' },
     { title: 'Step 3', description: 'Select Rooms' },
     { title: 'Step 4', description: 'Select Rooms' },
   
+  ]
+  export const hotel2NDStepForm=[
+    {
+      label:'Address',
+      id:'address',
+      type:'text',
+
+
+    },
+    {
+      label:'Our Cost',
+      id:'ourCost',
+      type:'number',
+
+    },
+    {
+      label:'PRF',
+      id:'prf',
+      type:'number',
+
+    },
+    {
+      label:'Total Cost',
+      id:'totalCost',
+      type:'number',
+
+    },
+    {
+      label:'Contact',
+      id:'contact',
+      type:'text',
+    },
+    {
+      label:'Email',
+      id:'email',
+      type:'email',
+    },
+    {
+      label:'Guest Name',
+      id:'guestName',
+      type:'text',
+
+    },
+    {
+      label:'Booking No' ,
+      id:'bookconfirmNo',
+      type:'text',
+    }
+
+
   ]
   const clients = [
   
@@ -118,7 +170,32 @@ import {
 
     })
 
-    const {}=useGlobalData()
+    const {token}=useGlobalData()
+useEffect(()=>{
+  makeRequest({
+    method:'GET',
+    url:FindQuerybYid+QueryID,
+    headers:{
+      Authorization:token
+    }
+  })
+  .then((response)=>{
+    if(response){
+      console.log('DATA',response.result)
+      setdata({...data,client:response.result.client,service:response.result.serviceType})
+      hotelForm.map((form)=>{
+        document.getElementById(form.id).value=response.result[form.id] || ''
+      })
+
+    }
+    else{
+      toast.error('Failed to fetch data')
+    }
+  })
+  .catch((error)=>{
+    toast.error('Failed to fetch data')
+  })
+},[])
 
     const handleFlightSubmit=async()=>{
       const body={
@@ -601,6 +678,7 @@ headers:{
      
       )
       :currentStep===2?
+      data.service==='Flight'?
       (
         <>
         <Box px={'10%'} py={'5%'} gap={5} display={'flex'} flexDir={'column'}>
@@ -661,7 +739,143 @@ headers:{
         </Box>
        
         </>
+      ):
+      data.service==='Hotel' ? 
+      (
+        <>
+        <Box px={'10%'} py={'5%'} gap={5} display={'flex'} flexDir={'column'}>
+          <form >
+          <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+            {hotelForm.map((form,index)=>(
+              <>
+              <FormControl>
+                <FormLabel>{form.label}</FormLabel>
+                {
+                  form.type==='select'?
+                  (
+                    <NormalSelect id={form.id} >
+                      <option value={''} disabled selected>Select</option>
+                      {
+                        form.options.map((option)=>(
+                          <option value={option}>{option}</option>
+                        ))
+                      }
+                    </NormalSelect>
+                  )
+                  :(
+                    <Input type={form.type} id={form.id} placeholder={form.placeholder} />
+
+                  )
+                }
+              </FormControl>
+              </>
+            ))}
+            {
+              hotel2NDStepForm.map((form,index)=>(
+                <>
+                <FormControl>
+                <FormLabel>{form.label}</FormLabel>
+              {
+                form.type==='select'?
+                (
+                  <NormalSelect >
+                    <option value={''} disabled selected>Select</option>
+                    {
+                      form.options.map((option)=>(
+                        <option value={option.value}>{option.label}</option>
+                      ))
+                    }
+                  </NormalSelect>
+                )
+                :(
+                  <Input type={form.type} onChange={(e)=>{
+                    if(form.label==='Our Cost'||form.label==='PRF'){
+                      const a=document.getElementById('ourCost').value;
+                      const b=document.getElementById('prf').value;
+                      document.getElementById('totalCost').value=Number(a)+Number(b)
+                    }
+                    
+  
+                  }} id={form.id} placeholder={form.placeholder} />
+                )
+              }
+              </FormControl>
+                </>
+            ))}
+          
+            </Grid>
+            <FormControl
+            py={10}
+            >
+              <Button onClick={async()=>{
+                const hotelData=hotelForm.map((form)=>{
+                  return{
+                    [form.id]:document.getElementById(form.id).value
+                  }
+                }
+                )
+                const hotelObj=hotelData.reduce((acc,form)=>{
+                  return{
+                    ...acc,
+                    ...form
+                  }
+                }
+                )
+                const hotelExtraData=hotel2NDStepForm.map((form)=>{
+                  return{
+                    [form.id]:document.getElementById(form.id).value
+                  }
+                }
+                )
+                const hotelExtraObj=hotelExtraData.reduce((acc,form)=>{
+                  return{
+                    ...acc,
+                    ...form
+                  }
+                }
+                )
+                const finalData={
+                  ...hotelObj,
+                  ...hotelExtraObj
+                }
+                await makeRequest({
+                  method:'PUT',
+                  url:`${ConfirmHotelQuery}${QueryID}`,
+                  data:finalData
+            ,
+          headers:{
+            Authorization:token
+          }
+                })
+                .then((response)=>{
+                  if(response){
+                    console.log(response.data.result)
+                    toast.success('Query Genarated Successfully')
+                  }
+                  else{
+                    toast.error('Failed to genarate query')
+                  }
+                })
+                .catch((error)=>{
+                  toast.error('Failed to genarate query')
+                }
+                )
+            
+
+              }}>Next</Button>
+            </FormControl>
+          </form>
+        </Box>
+        </>
       )
+      :(
+        <>
+        
+        </>
+      )
+
+      
+      
       :
       (
         <>

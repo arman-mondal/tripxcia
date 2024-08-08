@@ -38,7 +38,7 @@ const navigate=useNavigate();
         <table className="w-full min-w-[640px] table-auto">
           <thead>
             <tr>
-              {["ID", "Client Name", "Staff", "Service", "Status","Flight Number","Airline Name" ,"Action"].map((el) => (
+              {["SL","ID", "Client Name", "Staff", "Service", "Status","Action"].map((el) => (
                 <th
                   key={el}
                   className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -61,9 +61,17 @@ const navigate=useNavigate();
                     : "border-b border-blue-gray-50"
                 }`;
                 const type=row.serviceType;
-                if(type==='Flight'){
+            
            return(
                   <tr key={1}>
+                    <td className={className}>
+                      <div className="flex items-center gap-4">
+                     
+                      
+                            {index+1}
+                            </div>
+                         
+                    </td>
                     <td className={className}>
                       <div className="flex items-center gap-4">
                      
@@ -115,18 +123,10 @@ const navigate=useNavigate();
                         <option value="1">Confirmed</option>
                       </Select>
                     </td>
-                    <td className={className}>
-                    <Typography className="text-xs font-semibold text-blue-gray-600">
-                        {row.flightNumber}
-                      </Typography>
-                    </td>
-                    <td className={className}>
-                    <Typography className="text-xs font-semibold text-blue-gray-600">
-                        {row.airlineName}
-                      </Typography>
-                    </td>
+                   
                     <td className={className}>
                    {row.status===1 ? 
+                 row.serviceType==='Flight' ? 
                   (
                     <Stack direction="row" spacing={4}>
                       <Ticket onClick={()=>{
@@ -140,8 +140,28 @@ const navigate=useNavigate();
                     </Stack>
                   ) 
                   :
+                  row.serviceType==='Hotel' ?
                   (
-                    <Eye style={{cursor:'pointer'}} onClick={()=>{
+                    <Stack direction="row" spacing={4}>
+                      <Ticket onClick={()=>{
+                        navigate(`/hotel/bill/${row._id}`)
+                      }}  style={{cursor:'pointer'}} />
+                 
+                      <Receipt  style={{cursor:'pointer'}}  onClick={()=>{
+                        navigate(`/invoice/${row._id}`)
+                      }} />
+                   
+                    </Stack>
+                  ) 
+                  :(
+                    <>
+                    </>
+                  )
+                  :
+                  (
+                   row.serviceType==='Flight' ? (
+                    <Eye style={{cursor:'pointer'}}
+                    onClick={()=>{
                       setSelectedRow({
                         client:row.client,
                         serviceType:row.serviceType,
@@ -163,21 +183,20 @@ const navigate=useNavigate();
 
 
                      }}/>
+                   )
+                   :
+                   <>
+                   </>
                   )
                   }
                     </td>
                   </tr>
                 );
               }
-                if(type==='Hotel'){
-                  return(
-                    <>
-                    </>
-                  )
-                }
+              
 
                 
-              }
+              
             )}
           </tbody> : <tbody>
             <tr>

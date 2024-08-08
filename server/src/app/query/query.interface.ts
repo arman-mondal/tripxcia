@@ -32,6 +32,30 @@ export interface QueryInterface{
     vendorName?:string;
     status?:number;
     bookingDate?:string;
+    city?:string;
+    hotelName?:string;
+    checkInDate?:string;
+    checkOutDate?:string;
+    noOfNights?:number;
+    mealPlan?:string;
+    hotelCategory?:string;
+    roomOcuppency?:string;
+    noOfRooms?:number;
+    noOfGuests?:number;
+    noOfAdults?:number;
+    noOfChildren6?:number;
+    noOfChildren12?:number;
+    address?:string;
+    contact?:string;
+    email?:string;
+    guestName?:string;
+    bookconfirmNo?:string;
+    price?:number;
+    timestamp?:Date;
+
+
+    
+
     
     
     

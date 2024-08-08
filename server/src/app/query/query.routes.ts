@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { FlightQueryConfirmed, FlightQuerySave, getAllQueries, getFlightQueries, getHotelQueries, HotelQuery } from "./query.controller";
+import { findQueryByID, FlightQueryConfirmed, FlightQuerySave, getAllQueries, getFlightQueries, getHotelQueries, HotelQuery, HotelQueryConfirmed } from "./query.controller";
 const app=Router();
 
 app.post("/flight/save",FlightQuerySave);
@@ -9,6 +9,8 @@ app.put("/flight/confirm/:id",FlightQueryConfirmed);
 app.get('/',getAllQueries);
 app.post('/hotel/save',HotelQuery);
 app.get('/hotel/list',getHotelQueries);
+app.get('/:id',findQueryByID);
+app.put('/hotel/confirm/:id',HotelQueryConfirmed);
 export {
     app as QueryRoutes
 }
