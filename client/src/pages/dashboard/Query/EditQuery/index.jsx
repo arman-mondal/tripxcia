@@ -343,7 +343,8 @@ import {
       confirmButtonText: 'Yes, genarate it!'
     }).then(async(result) => {
       if (result.isConfirmed) {
-       await handleHotelQuery()
+
+        navigate('/dashboard/query-confirm/'+id)
   
   
       }
