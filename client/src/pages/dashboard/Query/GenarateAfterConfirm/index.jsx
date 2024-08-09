@@ -45,6 +45,7 @@ import {
   import { useGlobalData } from "@/hooks/GlobalData";
   import { ConfirmFlightQuery, ConfirmHotelQuery, FindQuerybYid, getAllQueries, SaveFlight } from "@/data/apis";
 import { hotelForm } from "../GenarateQuery";
+
   const steps = [
     { title: 'Step 1', description: 'Contact Info' },
     { title: 'Step 2', description: 'Date & Time' },
@@ -53,6 +54,11 @@ import { hotelForm } from "../GenarateQuery";
   
   ]
   export const hotel2NDStepForm=[
+    {
+      label:"Hotel Name",
+      id:'hotelName',
+      type:'text',
+    },
     {
       label:'Address',
       id:'address',
@@ -88,6 +94,12 @@ import { hotelForm } from "../GenarateQuery";
       id:'email',
       type:'email',
     },
+    
+
+
+  ]
+
+  const thirdHotelForm=[
     {
       label:'Guest Name',
       id:'guestName',
@@ -99,9 +111,9 @@ import { hotelForm } from "../GenarateQuery";
       id:'bookconfirmNo',
       type:'text',
     }
-
-
   ]
+
+
   const clients = [
   
     { value: "Arman Mondal", label: "Arman Mondal" },
@@ -115,15 +127,8 @@ import { hotelForm } from "../GenarateQuery";
   
   ]
   export default function GenarateQueryConfirm() {
-    const [currentStep, setCurrentStep] = useState(2)
-    const { activeStep } = useSteps({
-      index: currentStep,
-      count: steps.length,
-    })
-   const QueryID=useParams().id ;
-   
-    const [handleTable,settable]=useState(false)
-    const [totalFlightTicket,setTotalFlightTicket]=useState(1)
+
+
     const [data,setdata]=useState({
       client:'Select',
       service:'Select',
@@ -158,6 +163,30 @@ import { hotelForm } from "../GenarateQuery";
   
   
     })
+    const [currentStep, setCurrentStep] = useState(data.service==='Flight'?2:1)
+    const { activeStep } = useSteps({
+      index: currentStep,
+      count: steps.length,
+    })
+   const QueryID=useParams().id ;
+   
+    const [handleTable,settable]=useState(false)
+    const [totalFlightTicket,setTotalFlightTicket]=useState(1)
+ const [hotelData,sethotelData]=useState({
+  hotelName:'',
+  address:'',
+  ourCost:0,
+  prf:0,
+  totalCost:0,
+  contact:'',
+  email:'',
+  guestName:'',
+  bookconfirmNo:'',
+  invoiceNumber:'',
+  vendorName:'',
+
+
+})
     const [thirdStepData,setThirdStepData]=useState({
       passengerName:'',
       gender:'',
@@ -170,7 +199,7 @@ import { hotelForm } from "../GenarateQuery";
 
     })
 
-    const {token}=useGlobalData()
+    const {token,vendors}=useGlobalData()
 useEffect(()=>{
   makeRequest({
     method:'GET',
@@ -664,17 +693,71 @@ headers:{
           <>
           </>
         )
-        :
+        :data.service==='Hotel'?
         (
+          <>
+             <Box px={'10%'} py={'5%'} gap={5} display={'flex'} flexDir={'column'}>
+          <form >
+          <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+          
+            {
+              hotel2NDStepForm.map((form,index)=>(
+                <>
+                <FormControl>
+                <FormLabel>{form.label}</FormLabel>
+              {
+                form.type==='select'?
+                (
+                  <NormalSelect >
+                    <option value={hotelData[form.id]} onChange={(e)=>{
+                      sethotelData({...hotelData,[form.id]:e.target.value})
+                    }} disabled selected>Select</option>
+                    {
+                      form.options.map((option)=>(
+                        <option value={option.value}>{option.label}</option>
+                      ))
+                    }
+                  </NormalSelect>
+                )
+                :(
+                  <Input type={form.type} value={form.id==='totalCost'? Number(hotelData.ourCost)+Number(hotelData.prf) : hotelData[form.id]} onChange={(e)=>{
+                
+                    sethotelData({...hotelData,[form.id]:e.target.value})
+                    
+  
+                  }} id={form.id} placeholder={form.placeholder} />
+                )
+              }
+              </FormControl>
+                </>
+            ))}
+          
+            </Grid>
+            <FormControl
+            py={10}
+            >
+              <Button onClick={async()=>{
+         
+          setCurrentStep(2)
+            
+
+              }}>Next</Button>
+            </FormControl>
+          </form>
+        </Box>
+          </>
+        )
+        :(
           <>
           </>
         )
        }
   
   
-        <FormControl>
+   {data.service==='Flight'? (     <FormControl>
          <Button onClick={()=>{settable(true)}}>Next</Button>
-         </FormControl>
+         </FormControl>):(
+          <></>)}
          </Box>
      
       )
@@ -745,128 +828,29 @@ headers:{
       (
         <>
         <Box px={'10%'} py={'5%'} gap={5} display={'flex'} flexDir={'column'}>
-          <form >
+          <form>
           <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
-            {hotelForm.map((form,index)=>(
-              <>
+            {thirdHotelForm.map((form,index)=>(
               <FormControl>
-                <FormLabel>{form.label}</FormLabel>
-                {
-                  form.type==='select'?
-                  (
-                    <NormalSelect id={form.id} >
-                      <option value={''} disabled selected>Select</option>
-                      {
-                        form.options.map((option)=>(
-                          <option value={option}>{option}</option>
-                        ))
-                      }
-                    </NormalSelect>
-                  )
-                  :(
-                    <Input type={form.type} id={form.id} placeholder={form.placeholder} />
+              <FormLabel>{form.label}</FormLabel>
+              <Input type={form.type} value={hotelData[form.id]} onChange={(e)=>{
+                    sethotelData({...hotelData,[form.id]:e.target.value})
+              }} placeholder={form.placeholder} />
 
-                  )
-                }
+
+
               </FormControl>
-              </>
-            ))}
-            {
-              hotel2NDStepForm.map((form,index)=>(
-                <>
-                <FormControl>
-                <FormLabel>{form.label}</FormLabel>
-              {
-                form.type==='select'?
-                (
-                  <NormalSelect >
-                    <option value={''} disabled selected>Select</option>
-                    {
-                      form.options.map((option)=>(
-                        <option value={option.value}>{option.label}</option>
-                      ))
-                    }
-                  </NormalSelect>
-                )
-                :(
-                  <Input type={form.type} onChange={(e)=>{
-                    if(form.label==='Our Cost'||form.label==='PRF'){
-                      const a=document.getElementById('ourCost').value;
-                      const b=document.getElementById('prf').value;
-                      document.getElementById('totalCost').value=Number(a)+Number(b)
-                    }
-                    
-  
-                  }} id={form.id} placeholder={form.placeholder} />
-                )
-              }
-              </FormControl>
-                </>
-            ))}
-          
-            </Grid>
-            <FormControl
-            py={10}
-            >
-              <Button onClick={async()=>{
-                const hotelData=hotelForm.map((form)=>{
-                  return{
-                    [form.id]:document.getElementById(form.id).value
-                  }
-                }
-                )
-                const hotelObj=hotelData.reduce((acc,form)=>{
-                  return{
-                    ...acc,
-                    ...form
-                  }
-                }
-                )
-                const hotelExtraData=hotel2NDStepForm.map((form)=>{
-                  return{
-                    [form.id]:document.getElementById(form.id).value
-                  }
-                }
-                )
-                const hotelExtraObj=hotelExtraData.reduce((acc,form)=>{
-                  return{
-                    ...acc,
-                    ...form
-                  }
-                }
-                )
-                const finalData={
-                  ...hotelObj,
-                  ...hotelExtraObj
-                }
-                await makeRequest({
-                  method:'PUT',
-                  url:`${ConfirmHotelQuery}${QueryID}`,
-                  data:finalData
-            ,
-          headers:{
-            Authorization:token
-          }
-                })
-                .then((response)=>{
-                  if(response){
-                    console.log(response.data.result)
-                    toast.success('Query Genarated Successfully')
-                  }
-                  else{
-                    toast.error('Failed to genarate query')
-                  }
-                })
-                .catch((error)=>{
-                  toast.error('Failed to genarate query')
-                }
-                )
             
-
-              }}>Next</Button>
+            ))}
+            </Grid>
+            < FormControl py={5}>
+            <Button onClick={async()=>{
+              setCurrentStep(3)
+            }}>Next</Button>
             </FormControl>
           </form>
-        </Box>
+          </Box>
+     
         </>
       )
       :(
@@ -878,7 +862,8 @@ headers:{
       
       
       :
-      (
+      
+        data.service==='Flight'?
         <>
        <Box px={'10%'} py={'5%'} gap={5} display={'flex'} flexDir={'column'}>
         <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
@@ -892,9 +877,11 @@ headers:{
          <FormLabel>Vendor Name</FormLabel>
          <NormalSelect value={thirdStepData.vendorName} onChange={(e)=>{
           setThirdStepData({...thirdStepData,vendorName:e.target.value})
+
          }}>
-          <option value="">Select</option>
-          <option value="Test">Test</option>
+         {vendors.map((vendor)=>(
+          <option value={vendor.name}>{vendor.name}</option>
+         ))}
 
 
          </NormalSelect>
@@ -906,7 +893,64 @@ headers:{
         
         </Box>
         </>
-      )   
+      
+      
+      : 
+      data.service==='Hotel'?
+      (
+        <>
+          <Box px={'10%'} py={'5%'} gap={5} display={'flex'} flexDir={'column'}>
+        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Invoice Number</FormLabel>
+         <Input value={hotelData.invoiceNumber} onChange={(e)=>{
+sethotelData({...hotelData,invoiceNumber:e.target.value})         }} type="text" placeholder="Passenger Name" />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Vendor Name</FormLabel>
+         <NormalSelect value={hotelData.vendorName} onChange={(e)=>{
+          sethotelData({...hotelData,vendorName:e.target.value})
+          
+         }}>
+         {vendors.map((vendor)=>(
+          <option value={vendor.name}>{vendor.name}</option>
+         ))}
+
+
+         </NormalSelect>
+        </FormControl>
+        </Grid>
+        <FormControl>
+        <Button onClick={async()=>{
+     
+                await makeRequest({
+                  method:'PUT',
+                  url:`${ConfirmHotelQuery}${QueryID}`,
+                  data:hotelData
+            ,
+          headers:{
+            Authorization:token
+          }
+                })
+                .then((response)=>{
+                  toast.success('Query Genarated Successfully')
+                  window.location.href='/'
+                })
+                .catch((error)=>{
+                  toast.error('Failed to genarate query')
+                }
+                )
+        }}>Submit</Button>
+        </FormControl>
+        
+        </Box>
+        </>
+      )
+      :
+      (
+        <>
+        </>
+      )
       
      }
   
