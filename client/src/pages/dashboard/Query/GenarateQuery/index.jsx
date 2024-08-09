@@ -298,6 +298,7 @@ const firstStepHandle=()=>{
     confirmButtonText: 'Yes, genarate it!'
   }).then((result) => {
     if (result.isConfirmed) {
+      handleFlightSubmit()
       setCurrentStep(currentStep+1)
     }
     else{
