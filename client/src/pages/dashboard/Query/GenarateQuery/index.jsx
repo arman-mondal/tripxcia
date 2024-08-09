@@ -262,6 +262,7 @@ const {token}=useGlobalData()
    })
     .then((response)=>{
       if(response){
+        navigate('/dashboard/query-confirm/'+response.result._id)
         toast.success('Query Genarated Successfully')
         
       }
