@@ -4,6 +4,7 @@ import Ticket from "./pages/dashboard/Ticket";
 import Invoice from "./pages/dashboard/Invoice";
 import { SignIn } from "./pages/auth";
 import HotelBill from "./pages/dashboard/HotelBill";
+import EditQuery from "./pages/dashboard/Query/EditQuery";
 
 function App() {
   return (

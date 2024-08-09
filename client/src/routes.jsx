@@ -26,6 +26,7 @@ import Role from "./pages/dashboard/Role";
 import Sales from "./pages/dashboard/Sales";
 import path from "path";
 import GenarateQueryConfirm from "./pages/dashboard/Query/GenarateAfterConfirm";
+import EditQuery from "./pages/dashboard/Query/EditQuery";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -140,7 +141,13 @@ export const routes = [
         element: <GenarateQueryConfirm />,
         hidden:true
       },
-
+      {
+        icon: <Quote {...icon} />,
+        name: "query-edit",
+        path: "/query-edit/:id",
+        element: <EditQuery />,
+        hidden:true
+      },
  
       {
         icon: <CheckCircle {...icon} />,

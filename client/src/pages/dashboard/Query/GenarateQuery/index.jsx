@@ -48,6 +48,7 @@ import TableFlightQuery from "@/components/TableFlightQuery";
 import makeRequest from "@/data/api";
 import { SaveFlight, SaveHotel } from "@/data/apis";
 import { useGlobalData } from "@/hooks/GlobalData";
+import { useNavigate, useNavigation } from "react-router-dom/dist";
 const steps = [
   { title: 'Step 1', description: 'Contact Info' },
   { title: 'Step 2', description: 'Date & Time' },
@@ -151,6 +152,7 @@ export default function GenarateQuery() {
     index: currentStep,
     count: steps.length,
   })
+  const navigate=useNavigate()
   const [handleTable,settable]=useState(false)
   const [totalFlightTicket,setTotalFlightTicket]=useState(1)
   const [data,setdata]=useState({
@@ -227,6 +229,7 @@ const {token}=useGlobalData()
     .then((response)=>{
       if(response){
         toast.success('Query Genarated Successfully')
+
       }
       else{
         toast.error('Failed to genarate query')
@@ -260,6 +263,7 @@ const {token}=useGlobalData()
     .then((response)=>{
       if(response){
         toast.success('Query Genarated Successfully')
+        
       }
       else{
         toast.error('Failed to genarate query')
@@ -304,7 +308,24 @@ const firstStepHandle=()=>{
   }
 }
 if(data.service==='Hotel'){
-  handleHotelQuery()
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You want to genarate query for this service",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, genarate it!'
+  }).then(async(result) => {
+    if (result.isConfirmed) {
+     await handleHotelQuery()
+
+
+    }
+    else{
+
+    }
+})
 }
 }
 

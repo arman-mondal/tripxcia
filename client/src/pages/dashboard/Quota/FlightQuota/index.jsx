@@ -39,7 +39,7 @@ const navigate=useNavigate();
         <table className="w-full min-w-[640px] table-auto">
           <thead>
             <tr>
-              {["ID", "Client Name", "Staff", "Service", "Status","Flight Number","Airline Name" ,"Action"].map((el) => (
+              {["SL","ID", "Client Name", "Staff", "Service", "Status","Flight Number","Airline Name" ,"Action"].map((el) => (
                 <th
                   key={el}
                   className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -55,7 +55,9 @@ const navigate=useNavigate();
             </tr>
           </thead>
         {FlightQuery.length>0 ?   <tbody>
-            {FlightQuery.map((row,index)=> {
+            {FlightQuery
+            .filter(a=>a.flightType!=='')
+            .map((row,index)=> {
                 const className = `py-3 px-5 ${
                   index === FlightQuery.length - 1
                     ? ""
@@ -64,6 +66,14 @@ const navigate=useNavigate();
 
                 return (
                   <tr key={1}>
+                     <td className={className}>
+                      <div className="flex items-center gap-4">
+                     
+                      
+                            {index+1}
+                            </div>
+                         
+                    </td>
                     <td className={className}>
                       <div className="flex items-center gap-4">
                      

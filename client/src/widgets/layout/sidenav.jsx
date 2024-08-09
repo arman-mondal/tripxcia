@@ -62,7 +62,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                 </Typography>
               </li>
             )}
-            {pages.filter(a=>a.name!=='query-confirm').map(({ icon, name, path, hasDropdown,dropdown }) => (
+            {pages.filter(a=>a.name!=='query-confirm' && 'query-edit').map(({ icon, name, path, hasDropdown,dropdown }) => (
               hasDropdown ? (
                 <li key={name} style={{
                 }}>

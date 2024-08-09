@@ -14,7 +14,7 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { authorsTableData, projectsTableData } from "@/data";
 import { useGlobalData } from '@/hooks/GlobalData';
 import { Select, Stack } from '@chakra-ui/react';
-import { Eye, Receipt, Ticket } from 'lucide-react';
+import { Edit, Eye, Receipt, Ticket } from 'lucide-react';
 import TableFlightQuery from '@/components/TableFlightQuery';
 import Swal from 'sweetalert2';
 import { Link, useNavigate, useRoutes } from 'react-router-dom';
@@ -38,7 +38,7 @@ const navigate=useNavigate();
         <table className="w-full min-w-[640px] table-auto">
           <thead>
             <tr>
-              {["SL","ID", "Client Name", "Staff", "Service", "Status","Action"].map((el) => (
+              {["SL","ID", "Client Name", "Staff", "Service","Action"].map((el) => (
                 <th
                   key={el}
                   className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -54,7 +54,9 @@ const navigate=useNavigate();
             </tr>
           </thead>
         {queries.length>0 ?   <tbody>
-            {queries.map((row,index)=> {
+            {queries
+            .filter(a=>a.status===0)
+            .map((row,index)=> {
                 const className = `py-3 px-5 ${
                   index === queries.length - 1
                     ? ""
@@ -63,7 +65,7 @@ const navigate=useNavigate();
                 const type=row.serviceType;
             
            return(
-                  <tr key={1}>
+                  <tr key={1} >
                     <td className={className}>
                       <div className="flex items-center gap-4">
                      
@@ -94,102 +96,13 @@ const navigate=useNavigate();
                         {row.serviceType}
                       </Typography>
                     </td>
-                    <td className={className}>
-                      <Select onChange={(e)=>{
-                        if(e.target.value==='1'){
-                          Swal.fire({
-                            title: 'Are you sure?',
-                            text: "You want to confirm this flight",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Yes, confirm it!',
-                            cancelButtonText: 'No, keep it',
-                            confirmButtonColor:'#4caf50',
-                            cancelButtonColor:'#f44336'
-                          }).then((result) => {
-                            if (result.isConfirmed) {
-                              navigate(`/dashboard/query-confirm/${row._id}`)
-                            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                             return
-                            }
-                          })
-
-                        }
-                        else{
-                          return
-                        }
-                      }} value={row.status} disabled={row.status===1}>
-                        <option value="0">Pending</option>
-                        <option value="1">Confirmed</option>
-                      </Select>
-                    </td>
+                  
                    
                     <td className={className}>
-                   {row.status===1 ? 
-                 row.serviceType==='Flight' ? 
-                  (
-                    <Stack direction="row" spacing={4}>
-                      <Ticket onClick={()=>{
-                        navigate(`/ticket/${row._id}`)
-                      }}  style={{cursor:'pointer'}} />
-                 
-                      <Receipt  style={{cursor:'pointer'}}  onClick={()=>{
-                        navigate(`/invoice/${row._id}`)
-                      }} />
-                   
-                    </Stack>
-                  ) 
-                  :
-                  row.serviceType==='Hotel' ?
-                  (
-                    <Stack direction="row" spacing={4}>
-                      <Ticket onClick={()=>{
-                        navigate(`/hotel/bill/${row._id}`)
-                      }}  style={{cursor:'pointer'}} />
-                 
-                      <Receipt  style={{cursor:'pointer'}}  onClick={()=>{
-                        navigate(`/invoice/${row._id}`)
-                      }} />
-                   
-                    </Stack>
-                  ) 
-                  :(
-                    <>
-                    </>
-                  )
-                  :
-                  (
-                   row.serviceType==='Flight' ? (
-                    <Eye style={{cursor:'pointer'}}
-                    onClick={()=>{
-                      setSelectedRow({
-                        client:row.client,
-                        serviceType:row.serviceType,
-                        status:row.status,
-                        FlightNumber:row.flightNumber,
-                        airlineNames:row.airlineName,
-                        staff:row.staff,
-                        id:row._id,
-                        departureFrom:row.departureFrom,
-                        OurCost:row.ourCost,
-                        Prf:row.prf,
-                        arrivalTo:row.arrivalTo,
-                        refundable:row.refundable,
-                        fareType:row.fareType,
-                        flightType:row.flightType
-                        
-                      });
-                      setIsOpen(true);
-
-
-                     }}/>
-                   )
-                   :
-                   <>
-                   </>
-                  )
-                  }
-                    </td>
+                      <Edit  onClick={()=>{
+                        navigate(`/dashboard/query-edit/${row._id}`)
+                      }} className='cursor-pointer hover:scale-105 transition-all' />
+                                  </td>
                   </tr>
                 );
               }

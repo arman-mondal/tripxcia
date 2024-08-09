@@ -1,1 +1,1 @@
-export const API_URL = 'https://tripxcia.onrender.com/';
+export const API_URL = 'https://20.244.48.17/';
