@@ -180,22 +180,23 @@ useEffect(()=>{
     }
   })
   .then((response)=>{
-    if(response){
+  
       console.log('DATA',response.result)
       setdata({...data,client:response.result.client,service:response.result.serviceType})
       hotelForm.map((form)=>{
-        document.getElementById(form.id).value=response.result[form.id] || ''
+        const element = document.getElementById(form.id);
+        if (element && response.result[form.id]) {
+          element.value = response.result[form.id];
+        }
       })
 
-    }
-    else{
-      toast.error('Failed to fetch data')
-    }
+  
   })
   .catch((error)=>{
+    console.log(error)
     toast.error('Failed to fetch data')
   })
-},[])
+},[hotel2NDStepForm])
 
     const handleFlightSubmit=async()=>{
       const body={

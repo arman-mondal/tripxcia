@@ -70,7 +70,7 @@ export default function HotelBill() {
     <Box ref={pdfRef} p={2} display={'flex'}  flexDir={'column'}>
     <Box minH={'150px'} maxH={'150px'} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
         <Box>
-            <Image  width={'300px'} src="http://localhost:5173/src/assets/logo/logo.png" />
+            <Image  width={'300px'} src="https://tripxcia.vercel.app/assets/logo-180beaee.png" />
         </Box>
         <Box display={'flex'} flexDir={'column'} px={5}>
             <Heading fontSize={'medium'}>Tripxcia Trips LLP</Heading>
