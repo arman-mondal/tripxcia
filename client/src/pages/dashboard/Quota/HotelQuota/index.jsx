@@ -140,7 +140,7 @@ const navigate=useNavigate();
                   (
                     <Stack direction="row" spacing={4}>
                       <Ticket onClick={()=>{
-                        navigate(`/ticket/${row._id}`)
+                        navigate(`/hotel/bill/${row._id}`)
                       }}  style={{cursor:'pointer'}} />
                  
                       <Receipt  style={{cursor:'pointer'}}  onClick={()=>{
