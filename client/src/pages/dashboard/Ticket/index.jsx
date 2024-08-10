@@ -17,11 +17,11 @@ export default function Ticket() {
     
     
   return (
-    <div className='bg-gray-500 h-[160vh] w-full flex justify-center items-center flex-col'>
+    <div className='bg-gray-500 h-[160vh] px-[30%]  w-full flex justify-center items-center flex-col'>
        {
         data &&  <Wrap ref={targetRef} sx={{
-            height:'100vh',
-            width:'100%',
+            height:'auto',
+            width:'auto',
             backgroundColor:'white',
             backdropBlur:'10px',
            display:'flex',
@@ -29,6 +29,8 @@ export default function Ticket() {
         //    margin:5,
            padding:5,
            gap:5,
+           borderColor:'black',
+           borderWidth:2,
 
         }}><Box minW={'100%'}>
             <Text fontSize={40}>E-Ticket</Text>
@@ -104,7 +106,10 @@ export default function Ticket() {
         </Wrap>
        }
        <Stack direction={'row'} mt={10} pos={'fixed'} bottom={0} spacing={10}>
-              <Button onClick={handlePrint}>Print</Button>
+              <Button onClick={()=>{
+                targetRef.current.style.borderWidth=0;
+                handlePrint();
+              }}>Print</Button>
             </Stack>
     </div>
   )
