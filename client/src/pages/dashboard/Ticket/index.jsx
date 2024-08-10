@@ -1,5 +1,6 @@
 import { useGlobalData } from '@/hooks/GlobalData';
 import { Box, Button, Grid, Stack, Text, Wrap } from '@chakra-ui/react';
+import { Printer } from 'lucide-react';
 import React, { useRef } from 'react'
 import { useParams } from 'react-router-dom';
 import { usePDF } from 'react-to-pdf';
@@ -105,12 +106,30 @@ export default function Ticket() {
                 
         </Wrap>
        }
-       <Stack direction={'row'} mt={10} pos={'fixed'} bottom={0} spacing={10}>
-              <Button onClick={()=>{
-                targetRef.current.style.borderWidth=0;
-                handlePrint();
-              }}>Print</Button>
-            </Stack>
+       <Printer onMouseEnter={(e)=>{
+            e.currentTarget.style.scale=1.2;
+
+        }}
+        onMouseLeave={(e)=>{
+            e.currentTarget.style.scale=1;
+        }
+        }
+        color="white" style={{
+            position: 'fixed',
+            right: '20px',
+            bottom: '20px',
+            cursor: 'pointer',
+            borderRadius:'100%',
+            backgroundColor:'blue',
+            height:'60px',
+            width:'60px',
+            padding:10,
+            transition:'all 0.3s',
+            zIndex:100
+        }} onClick={()=>{
+            targetRef.current.style.borderWidth=0;
+            handlePrint();
+        }} />
     </div>
   )
 }
