@@ -103,7 +103,7 @@ export default function Ticket() {
                 
         </Wrap>
        }
-       <Stack direction={'row'} mt={10} spacing={10}>
+       <Stack direction={'row'} mt={10} pos={'fixed'} bottom={0} spacing={10}>
               <Button onClick={handlePrint}>Print</Button>
             </Stack>
     </div>
