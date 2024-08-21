@@ -52,6 +52,18 @@ export interface QueryInterface{
     bookconfirmNo?:string;
     price?:number;
     timestamp?:Date;
+    duplicate?:any[];
+    via:{
+        FlightNumber:string;
+        departureFrom:string;
+        departureTime:string;
+        arrivalTo:string;
+        arrivalTime:string;
+  
+  
+      }
+      confirmed:any;
+    
 
 
     

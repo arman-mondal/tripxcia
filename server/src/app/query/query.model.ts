@@ -51,8 +51,22 @@ const QuerySchema = new mongoose.Schema<QueryInterface>({
     bookconfirmNo: { type: String, required: false },
     price: { type: Number, required: false },
     timestamp: { type: Date, required: false ,default:Date.now()},
+    duplicate: [
+        {
+            type: Schema.Types.Mixed,
+            required: false
+        }
+    ],
+    via:{
+        FlightNumber: { type: String, required: false },
+        departureFrom: { type: String, required: false },
+        departureTime: { type: String, required: false },
+        arrivalTo: { type: String, required: false },
+        arrivalTime: { type: String, required: false },
+
+    },
     
-    
+    confirmed: { type: Schema.Types.Mixed, required: false }
 
 });
 

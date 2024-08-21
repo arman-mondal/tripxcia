@@ -19,10 +19,12 @@ import "../public/css/tailwind.css";
 import { ChakraProvider } from "@chakra-ui/react";
 import { Toaster } from "react-hot-toast";
 import { GlobalDataProvider } from "./hooks/GlobalData";
+import ReduxProvider from "./redux/provider";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <BrowserRouter>
+   <ReduxProvider>
+   <BrowserRouter>
  <GlobalDataProvider>
  <ChakraProvider>
       <Toaster/>
@@ -34,5 +36,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
      </ChakraProvider>
  </GlobalDataProvider>
     </BrowserRouter>
+   </ReduxProvider>
   </React.StrictMode>
 );

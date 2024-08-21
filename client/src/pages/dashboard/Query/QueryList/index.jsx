@@ -25,9 +25,11 @@ export default function QueryList() {
 const navigate=useNavigate();
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
-      <TableFlightQuery isOpen={isOpen} data={selectedRow} onClose={()=>{
+      <TableFlightQuery isOpen={isOpen} data={selectedRow} duplicate={selectedRow?.duplicate ?? null} onClose={()=>{
         setIsOpen(false)
-      }} handleSave={()=>{}} />
+      }} handleSave={()=>{
+        console.log(selectedRow)
+      }} />
     <Card>
       <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
         <Typography variant="h6" color="white">

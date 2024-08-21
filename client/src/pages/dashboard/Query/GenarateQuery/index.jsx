@@ -49,6 +49,7 @@ import makeRequest from "@/data/api";
 import { SaveFlight, SaveHotel } from "@/data/apis";
 import { useGlobalData } from "@/hooks/GlobalData";
 import { useNavigate, useNavigation } from "react-router-dom/dist";
+import FormDuplicate from "@/components/FormDuplicate";
 const steps = [
   { title: 'Step 1', description: 'Contact Info' },
   { title: 'Step 2', description: 'Date & Time' },
@@ -154,7 +155,16 @@ export default function GenarateQuery() {
   })
   const navigate=useNavigate()
   const [handleTable,settable]=useState(false)
-  const [totalFlightTicket,setTotalFlightTicket]=useState(1)
+  const [totalFlightTicket,setTotalFlightTicket]=useState(0)
+  const [formsData, setFormsData] = useState(Array.from({ length: totalFlightTicket }, () => ({})));
+
+  const handleFormChange = (index, data) => {
+    setFormsData((prevData) => {
+      const newData = [...prevData];
+      newData[index] = data;
+      return newData;
+    });
+  };
   const [data,setdata]=useState({
     client:'Select',
     service:'Select',
@@ -183,13 +193,22 @@ export default function GenarateQuery() {
     OurCost:0,
     Prf:0,
     refundable:false,
+    via:{
+      FlightNumber:'',
+      departureFrom:'Select Airport',
+      departureTime:'',
+      arrivalTo:'Select Airport',
+      arrivalTime:'',
+
+
+    }
 
 
     
 
 
   })
-  
+
 
 const {token}=useGlobalData()
   const handleFlightSubmit=async()=>{
@@ -214,9 +233,10 @@ const {token}=useGlobalData()
       ourCost:data?.OurCost,
       prf:data?.Prf,
       refundable:data?.refundable,
+      duplicate:formsData,
+      via:data?.via
 
     }
-    console.log(body)
    await makeRequest({
     method:'POST',
     url:`${SaveFlight}`,
@@ -229,6 +249,19 @@ const {token}=useGlobalData()
     .then((response)=>{
       if(response){
         toast.success('Query Genarated Successfully')
+     
+        if(body.serviceType==='Flight'){
+          navigate('/dashboard/quota-flight')
+
+        }
+        if(body.serviceType==='Cab'){
+          navigate('/dashboard/quota-cab')
+
+        }
+        if(body.serviceType==='Hotel'){
+          navigate('/dashboard/quota-hotel')
+
+        }
 
       }
       else{
@@ -298,7 +331,6 @@ const firstStepHandle=()=>{
     confirmButtonText: 'Yes, genarate it!'
   }).then((result) => {
     if (result.isConfirmed) {
-      handleFlightSubmit()
       setCurrentStep(currentStep+1)
     }
     else{
@@ -334,7 +366,13 @@ if(data.service==='Hotel'){
 
 
 
-
+const calculateTotalDays=(checkInDate,checkOutDate)=>{
+  const checkIn=new Date(checkInDate)
+  const checkOut=new Date(checkOutDate)
+  const diffTime=Math.abs(checkOut-checkIn)
+  const diffDays=Math.ceil(diffTime/(1000*60*60*24))
+  return diffDays
+}
 
 
 
@@ -343,7 +381,7 @@ if(data.service==='Hotel'){
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12 min-w-full">
-      <TableFlightQuery isOpen={handleTable} handleSave={handleFlightSubmit} onClose={()=>{settable(false)}}  data={data}/>
+      <TableFlightQuery isOpen={handleTable} handleSave={handleFlightSubmit} duplicate={formsData} onClose={()=>{settable(false)}}  data={data}/>
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
          Genarate Query
@@ -610,17 +648,13 @@ if(data.service==='Hotel'){
                 :
                 (
                   <Input type={item.type} placeholder={'Enter '+item.label} id={item.id} onChange={(e)=>{
-                      const calculateTotalDays=(checkInDate,checkOutDate)=>{
-                        const checkIn=new Date(checkInDate)
-                        const checkOut=new Date(checkOutDate)
-                        const diffTime=Math.abs(checkOut-checkIn)
-                        const diffDays=Math.ceil(diffTime/(1000*60*60*24))
-                        return diffDays
-                      }
-                     
-                      if(item.id==='checkInDate'&&data.checkOutDate){
+                  
+                     const checkInDate=document.getElementById('checkInDate').value;
+
+                      if(item.id=='checkOutDate'){
                        const a= document.getElementById('noOfNights');
-                       a.value=calculateTotalDays(e.target.value,data.checkOutDate).toString()
+                       a.value=calculateTotalDays(checkInDate,e.target.value).toString();
+                       console.log(calculateTotalDays(checkInDate,e.target.value))
                       }
                     
                       
@@ -660,8 +694,7 @@ if(data.service==='Hotel'){
       data.service==='Flight'?
       (
         <>
-        {Array.from({length:totalFlightTicket}).map((_,index)=>(
-          <>
+         <>
 
 <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
         <FormControl>
@@ -787,36 +820,36 @@ if(data.service==='Hotel'){
           <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
           <FormControl >
              <FormLabel>Flight Number</FormLabel>
-             <Input type="text" placeholder="Flight Number" value={data.FlightNumber} onChange={(e)=>{
-                setdata({...data,FlightNumber:e.target.value})
+             <Input type="text" placeholder="Flight Number" value={data.via.FlightNumber} onChange={(e)=>{
+              setdata({...data,via:{...data.via,FlightNumber:e.target.value}})
              }} />
             </FormControl>
             <FormControl>
              <FormLabel>Departure From</FormLabel>
-             <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:data.departureFrom,label:data.departureFrom}} onChange={(e)=>{
-              setdata({...data,departureFrom:e.value})
-            }
-            } isSearchable={true} />
+             <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:data.via.departureFrom,label:data.via.departureFrom}} 
+              onChange={(e)=>{
+              setdata({...data,via:{...data.via,departureFrom:e.value}})
+             }} 
+             isSearchable={true} />
             </FormControl>
             <FormControl>
              <FormLabel>Departure Time</FormLabel>
-             <Input type="time" placeholder="Departure Time" value={data.departureTime} onChange={(e)=>{
-                setdata({...data,departureTime:e.target.value})
-             }} />
+             <Input type="time" placeholder="Departure Time" value={data.via.departureTime}       onChange={(e)=>{
+              setdata({...data,via:{...data.via,departureTime:e.target.value}})
+             }}  />
             </FormControl>
             <FormControl>
              <FormLabel>Arrival To</FormLabel>
-            <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:data.arrivalTo,label:data.arrivalTo}} onChange={(e)=>{
-              setdata({...data,arrivalTo:e.value})
-            }
-            } isSearchable={true} />
+            <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:data.via.arrivalTo,label:data.via.arrivalTo}}       onChange={(e)=>{
+              setdata({...data,via:{...data.via,arrivalTo:e.value}})
+             }}  isSearchable={true} />
     
             </FormControl>
             <FormControl>
              <FormLabel>Arrival Time</FormLabel>
-             <Input type="time" placeholder="Arrival Time" value={data.arrivalTime} onChange={(e)=>{
-                setdata({...data,arrivalTime:e.target.value})
-             }} />
+             <Input type="time" placeholder="Arrival Time" value={data.via.arrivalTime}       onChange={(e)=>{
+              setdata({...data,via:{...data.via,arrivalTime:e.target.value}})
+             }}  />
             </FormControl>
             </Grid>
         </>
@@ -855,7 +888,17 @@ if(data.service==='Hotel'){
  
 
           </>
+          
+        {Array.from({length:totalFlightTicket}).map((_,index)=>(
+        <>
+        <FormDuplicate key={index} index={index} onChange={handleFormChange} />
+        <Button style={{backgroundColor:'red'}} onClick={()=>{
+          setTotalFlightTicket(totalFlightTicket-1)
+          setFormsData((prevData) => prevData.filter((_, i) => i !== index));
 
+        }}>Remove</Button>
+
+        </>
         ))}
        
      
@@ -881,7 +924,24 @@ if(data.service==='Hotel'){
 
 
       <FormControl>
-       <Button onClick={()=>{settable(true)}}>Next</Button>
+       <Button onClick={()=>{
+          Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to genarate query for this service",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, genarate it!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              settable(true)
+              }
+            else{
+              toast.error('Query not genarated')
+            }
+          })
+       }}>Next</Button>
        </FormControl>
        </Box>
    

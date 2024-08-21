@@ -18,15 +18,18 @@ import { Eye, Receipt, Ticket } from 'lucide-react';
 import TableFlightQuery from '@/components/TableFlightQuery';
 import Swal from 'sweetalert2';
 import { Link, useNavigate, useRoutes } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 export default function FlightQuota() {
   const {FlightQuery}=useGlobalData();
   const [selectedRow,setSelectedRow]=useState(null);
   const [isOpen,setIsOpen]=useState(false);
 const navigate=useNavigate();
+const selector=useSelector(state=>state);
+console.log(selector.query)
   // const [data,setdata]=useState(FlightQuery);
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
-      <TableFlightQuery isOpen={isOpen} data={selectedRow} onClose={()=>{
+      <TableFlightQuery isOpen={isOpen} data={selectedRow} isT={true} duplicate={selectedRow?.duplicate ?? null} onClose={()=>{
         setIsOpen(false)
       }} handleSave={()=>{}} />
     <Card>
@@ -166,7 +169,9 @@ const navigate=useNavigate();
                         arrivalTo:row.arrivalTo,
                         refundable:row.refundable,
                         fareType:row.fareType,
-                        flightType:row.flightType
+                        flightType:row.flightType,
+                        duplicate:row.duplicate,
+                        _id:row._id
                         
                       });
                       setIsOpen(true);

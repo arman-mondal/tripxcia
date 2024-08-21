@@ -17,3 +17,4 @@ export const getAllQueries=API_URL+"query";
 export const SaveHotel=API_URL+"query/hotel/save";
 export const FindQuerybYid=API_URL+"query/";
 export const ConfirmHotelQuery=API_URL+"query/hotel/confirm/";
+export const HotelDup=API_URL+"query/hotel/dup/";

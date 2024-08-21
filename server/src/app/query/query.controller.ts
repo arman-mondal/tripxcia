@@ -27,6 +27,9 @@ export const FlightQuerySave=async(req:Request,res:Response)=>{
             prf:req.body.prf,
             refundable:req.body.refundable,
             bookingDate:formattedDate,
+            duplicate:req.body.duplicate,
+            via:req.body.via,
+            status:0,
         });
         console.log(query)
         await query.save().then((result)=>{
@@ -48,9 +51,9 @@ export const HotelQuery=async(req:Request,res:Response)=>{
         const currentDate = new Date();
         const formattedDate = currentDate.toISOString().split('T')[0];
         const query = await new QueryModel({
-           client:req.body.client,
-              serviceType:'Hotel',
-                city:req.body.city,
+            client:req.body.client,
+            serviceType:'Hotel',
+            city:req.body.city,
                DomesticOrInternational:req.body.DomesticOrInternational,
                hotelName:req.body.hotelName,
                checkInDate:req.body.checkInDate,
@@ -64,6 +67,7 @@ export const HotelQuery=async(req:Request,res:Response)=>{
                 noOfAdults:req.body.noOfAdults,
                 noOfChildren6:req.body.noOfChildren6,
                 noOfChildren12:req.body.noOfChildren12,
+                status:0,
 
 
 
@@ -84,7 +88,38 @@ export const HotelQuery=async(req:Request,res:Response)=>{
     }
 }
 
+export const HotelQueryDup=async(req:Request,res:Response)=>{
+    try {
+        const currentDate = new Date();
+        const {id}=req.query;
+        const formattedDate = currentDate.toISOString().split('T')[0];
+       
+        await QueryModel.findByIdAndUpdate(id,{
+            status:0,
+            duplicate:req.body.duplicate,
+            timestamp:formattedDate,
+            hotelName:req.body.hotelName,
+            address:req.body.address,
+            contact:req.body.contact,
+            email:req.body.email,
+            ourCost:req.body.ourCost,
+            prf:req.body.prf,
 
+
+        })
+        .then((result)=>{
+            console.log(result)
+            return res.status(200).json({message:"Query Saved Successfully",result:result});
+        }).catch((error)=>{
+            console.log(error)
+            return res.status(500).json({message:error});
+        });
+        
+
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+}
 
 export const FlightQueryConfirmed=async(req:Request,res:Response)=>{
     try {
@@ -100,6 +135,7 @@ export const FlightQueryConfirmed=async(req:Request,res:Response)=>{
             meal:req.body.meal,
             invoiceNumber:req.body.invoiceNumber,
             vendorName:req.body.vendorName,
+            confirmed:req.body.confirmedQuery,
             status:1,
 
         })
@@ -131,6 +167,7 @@ export const HotelQueryConfirmed=async(req:Request,res:Response)=>{
             ourCost:req.body.ourCost,
             prf:req.body.prf,
             address:req.body.address,
+            confirmed:req.body.confirmedQuery,
 
             status:1,
 

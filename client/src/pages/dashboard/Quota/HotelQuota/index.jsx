@@ -18,6 +18,7 @@ import { Eye, Receipt, Ticket } from 'lucide-react';
 import TableFlightQuery from '@/components/TableFlightQuery';
 import Swal from 'sweetalert2';
 import { Link, useNavigate, useRoutes } from 'react-router-dom';
+import HotelTable from '@/components/HotelTable';
 export default function HotelQuota() {
   const {queries}=useGlobalData();
   const [selectedRow,setSelectedRow]=useState(null);
@@ -26,9 +27,12 @@ const navigate=useNavigate();
   // const [data,setdata]=useState(FlightQuery);
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
-      <TableFlightQuery isOpen={isOpen} data={selectedRow} onClose={()=>{
+      <HotelTable isOpen={isOpen} data={selectedRow} duplicate={selectedRow?.duplicate ?? null} isT={true} onClose={()=>{
         setIsOpen(false)
-      }} handleSave={()=>{}} />
+      }} handleSave={()=>{
+        setIsOpen(false)
+
+      }} />
     <Card>
       <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
         <Typography variant="h6" color="white">
@@ -151,7 +155,22 @@ const navigate=useNavigate();
                   ) 
                   :
                   (
-                   <></>
+                  <Eye 
+                  style={{cursor:'pointer'}}  onClick={()=>{
+                    const data={
+                      hotelName:row.hotelName,
+                      address:row.address,
+                      contact:row.contact,
+                      email:row.email,
+                      OurCost:row.ourCost,
+                      Prf:row.prf,
+                      duplicate:row.duplicate,
+                      _id:row._id
+                    }
+                    setSelectedRow(data)
+                    setIsOpen(true)
+                  }} 
+                  />
                   )
                   }
                     </td>

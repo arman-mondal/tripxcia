@@ -148,7 +148,7 @@ import {
   export default function EditQuery() {
     const {id}=useParams();
     const {clients}=useGlobalData()
-    const [currentStep, setCurrentStep] = useState(0)
+    const [currentStep, setCurrentStep] = useState(2)
     const { activeStep } = useSteps({
       index: currentStep,
       count: steps.length,

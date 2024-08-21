@@ -15,6 +15,8 @@ import {
   } from "@material-tailwind/react";
   import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
   import { authorsTableData, projectsTableData } from "@/data";
+  import { useSelector } from "react-redux";
+
   import {
     Box,
     Checkbox,
@@ -34,7 +36,7 @@ import {
   } from '@chakra-ui/react'
   import { useEffect, useState } from "react";
   import Select from "react-tailwindcss-select";
-  import { Form, useParams } from "react-router-dom";
+  import { Form, useNavigate, useParams } from "react-router-dom";
   import FlightExtraForm from "@/components/FlightExtraForm";
   import Swal from "sweetalert2";
   import toast from "react-hot-toast";
@@ -43,8 +45,11 @@ import {
   import TableFlightQuery from "@/components/TableFlightQuery";
   import makeRequest from "@/data/api";
   import { useGlobalData } from "@/hooks/GlobalData";
-  import { ConfirmFlightQuery, ConfirmHotelQuery, FindQuerybYid, getAllQueries, SaveFlight } from "@/data/apis";
+  import { ConfirmFlightQuery, ConfirmHotelQuery, FindQuerybYid, getAllQueries, HotelDup, SaveFlight } from "@/data/apis";
 import { hotelForm } from "../GenarateQuery";
+import HotelDuplicate from "@/components/HotelDuplicate";
+import axios from "axios";
+import HotelTable from "@/components/HotelTable";
 
   const steps = [
     { title: 'Step 1', description: 'Contact Info' },
@@ -66,6 +71,18 @@ import { hotelForm } from "../GenarateQuery";
 
 
     },
+    
+    {
+      label:'Contact',
+      id:'contact',
+      type:'text',
+    },
+    {
+      label:'Email',
+      id:'email',
+      type:'email',
+    },
+    
     {
       label:'Our Cost',
       id:'ourCost',
@@ -84,18 +101,6 @@ import { hotelForm } from "../GenarateQuery";
       type:'number',
 
     },
-    {
-      label:'Contact',
-      id:'contact',
-      type:'text',
-    },
-    {
-      label:'Email',
-      id:'email',
-      type:'email',
-    },
-    
-
 
   ]
 
@@ -163,13 +168,14 @@ import { hotelForm } from "../GenarateQuery";
   
   
     })
-    const [currentStep, setCurrentStep] = useState(data.service==='Flight'?2:1)
+    const [currentStep, setCurrentStep] = useState(data.service==='Flight'? 2:2)
     const { activeStep } = useSteps({
       index: currentStep,
       count: steps.length,
     })
    const QueryID=useParams().id ;
-   
+   const state = useSelector((state) => state);
+
     const [handleTable,settable]=useState(false)
     const [totalFlightTicket,setTotalFlightTicket]=useState(1)
  const [hotelData,sethotelData]=useState({
@@ -184,9 +190,11 @@ import { hotelForm } from "../GenarateQuery";
   bookconfirmNo:'',
   invoiceNumber:'',
   vendorName:'',
+  confirmedQuery:state.query.query
 
 
 })
+console.log(state)
     const [thirdStepData,setThirdStepData]=useState({
       passengerName:'',
       gender:'',
@@ -196,6 +204,7 @@ import { hotelForm } from "../GenarateQuery";
       meal:false,
       invoiceNumber:'',
       vendorName:'',
+      confirmedQuery:state.query.query
 
     })
 
@@ -226,7 +235,7 @@ useEffect(()=>{
     toast.error('Failed to fetch data')
   })
 },[hotel2NDStepForm])
-
+const navigate=useNavigate()
     const handleFlightSubmit=async()=>{
       const body={
      
@@ -244,8 +253,8 @@ headers:{
      })
       .then((response)=>{
         if(response){
-          console.log(response.data.result)
           toast.success('Query Genarated Successfully')
+          console.log('RESPONSE',response)
         }
         else{
           toast.error('Failed to genarate query')
@@ -290,7 +299,17 @@ headers:{
     }
   }
   
-  
+  const [totalHotelQuota,settotalHotelQuota]=useState(0)
+  const [formsData, setFormsData] = useState(Array.from({ length: totalHotelQuota }, () => ({})));
+const [hotelTable,sethotelTable]=useState(false)
+  const handleFormChange = (index, data) => {
+    setFormsData((prevData) => {
+      const newData = [...prevData];
+      newData[index] = data;
+      return newData;
+    });
+  };
+  const [selectedHotelDuplicate,setSelectedHotelDuplicate]=useState([])
   
   
   
@@ -302,7 +321,21 @@ headers:{
   
     return (
       <div className="mt-12 mb-8 flex flex-col gap-12">
-        <TableFlightQuery isOpen={handleTable} handleSave={handleFlightSubmit} onClose={()=>{settable(false)}}  data={data}/>
+        <TableFlightQuery isOpen={handleTable} handleSave={handleFlightSubmit} onClose={()=>{settable(false)}}   data={data}/>
+          <HotelTable duplicate={selectedHotelDuplicate} isOpen={hotelTable} data={
+            {
+              hotelName:hotelData.hotelName,
+              address:hotelData.address,
+              contact:hotelData.contact,
+              email:hotelData.email,
+              OurCost:hotelData.ourCost,
+              Prf:hotelData.prf,
+              totalCost:Number(hotelData.ourCost)+Number(hotelData.prf),
+
+            }
+          }
+           onClose={()=>{sethotelTable(false)}} />
+
         <Card>
           <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
            Genarate Query
@@ -698,7 +731,7 @@ headers:{
           <>
              <Box px={'10%'} py={'5%'} gap={5} display={'flex'} flexDir={'column'}>
           <form >
-          <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+          <Grid templateColumns='repeat(4, 1fr)' gap={5}  >
           
             {
               hotel2NDStepForm.map((form,index)=>(
@@ -733,12 +766,52 @@ headers:{
             ))}
           
             </Grid>
+{Array.from({length:totalHotelQuota}).map((_,index)=>(
+  <>
+  <HotelDuplicate remove={()=>{settotalHotelQuota(totalHotelQuota-1)}} onChange={handleFormChange} index={index} />
+  </>
+))}
+
             <FormControl
             py={10}
             >
               <Button onClick={async()=>{
+                settotalHotelQuota(totalHotelQuota+1)
          
-          setCurrentStep(2)
+            
+
+              }}>Duplicate</Button>
+            </FormControl>
+            <FormControl
+            py={10}
+            >
+              <Button onClick={async()=>{
+         const body={
+          hotelName:hotelData.hotelName,
+          address:hotelData.address,
+          contact:hotelData.contact,
+          email:hotelData.email,
+          ourCost:hotelData.ourCost,
+          prf:hotelData.prf,
+          duplicate:formsData
+          
+          }
+     const res=  await axios.put(HotelDup+'?id='+QueryID,
+       body,
+       {
+        headers:{
+          Authorization:token
+        }
+       }
+       );
+       if(res.status===200){
+        toast('Query Genarated Successfully')
+        setSelectedHotelDuplicate(body.duplicate)
+        sethotelTable(true)
+       }
+       else{
+          toast.error('Failed to genarate query')
+       }
             
 
               }}>Next</Button>
