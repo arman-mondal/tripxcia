@@ -14,6 +14,8 @@ import {
 
 }
 from '@chakra-ui/react'
+import { Typography } from '@material-tailwind/react';
+import { Heading } from 'lucide-react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';  
 import { useNavigate } from 'react-router-dom';
@@ -38,6 +40,10 @@ const navigate=useNavigate()
             
             <ModalCloseButton />
             <ModalBody overflowX={'scroll'}>
+              {  data?.OneWayOrRoundTrip==='Round Way' && 
+                <Typography className="text-xl font-semibold text-black">
+  Onward
+</Typography>              }
                 <Table variant='simple' >
                     <Tr bgColor={'#db2778'} textColor={'white'} gap={0}>
                         <Td borderRightColor={'white'} borderRightWidth={0.5}>Airline Name</Td>
@@ -96,7 +102,53 @@ const navigate=useNavigate()
                   ))}
                     </>}
                     </Table>
+{
+  data?.OneWayOrRoundTrip==='Round Way' && 
 
+  (
+<>
+<Typography className="text-xl font-semibold text-black">
+  Return
+</Typography>
+<Table variant='simple' >
+    <Tr bgColor={'#db2778'} textColor={'white'} gap={0}>
+        <Td borderRightColor={'white'} borderRightWidth={0.5}>Airline Name</Td>
+        <Td borderRightColor={'white'} borderRightWidth={0.5}>Flight Number</Td>
+        <Td borderRightColor={'white'} borderRightWidth={0.5}>Departure Airport</Td>
+        <Td borderRightColor={'white'} borderRightWidth={0.5}>Arrival Airport</Td>
+        <Td borderRightColor={'white'} borderRightWidth={0.5}>Fare Type</Td>
+        <Td borderRightColor={'white'} borderRightWidth={0.5}>Flight Type</Td>
+        <Td borderRightColor={'white'} borderRightWidth={0.5}>Total Cost</Td>
+        <Td  borderRightColor={'white'} borderRightWidth={0.5}>Fare refundable/Non-refundable</Td>
+        {isTable && <Td>Status</Td>}
+
+
+    </Tr>
+    <Tr>
+        <Td>{data?.airlineNames}</Td>
+        <Td>{data?.FlightNumber}</Td>
+        <Td>{data?.departureFrom}</Td>
+        <Td>{data?.arrivalTo}</Td>
+        <Td>{data?.fareType}</Td>
+        <Td>{data?.flightType}</Td>
+        <Td>₹ {(Number(data?.OurCost)+Number(data?.Prf)).toFixed(2)}</Td>
+        <Td>{data?.refundable ? 'Refundable' : 'Non-Refundable'}</Td>
+        {isTable && <Td><Button onClick={()=>{
+           dispatch(setQuery({
+            type:'Flight',
+            query:data?.FlightNumber,
+          }))
+          navigate('/dashboard/query-confirm/'+data?._id)
+
+          }} colorScheme='blue' >Confirm</Button></Td>}
+    </Tr>
+
+    </Table>
+
+</>
+  )
+
+}
             </ModalBody>
   
             <ModalFooter>

@@ -208,7 +208,49 @@ export default function GenarateQuery() {
 
 
   })
+  const [returnData,setReturnData]=useState({
+    client:'Select',
+    service:'Select',
+    passengerNumber:0,
+    domesticOrInternational:'',
+    oneWayOrRoundway:'',
+    from:'Select From Location',
+    to:'Select To Location',
+    departureDate:'',
+    cabType:'',
+    timeSlot:'',
+    city:'',
+    tripStartDateTime:'',
+    tripEndDateTime:'',
+    cab:'',
+    totalPassenger:0,
+    returnDate:'',
+    flightType:'',
+    airlineNames:'Select',
+    FlightNumber:'',
+    fareType:'',
+    departureFrom:'Select Airport',
+    departureTime:'',
+    arrivalTo:'Select Airport',
+    arrivalTime:'',
+    OurCost:0,
+    Prf:0,
+    refundable:false,
+    via:{
+      FlightNumber:'',
+      departureFrom:'Select Airport',
+      departureTime:'',
+      arrivalTo:'Select Airport',
+      arrivalTime:'',
 
+
+    }
+
+
+    
+
+
+  })
 
 const {token}=useGlobalData()
   const handleFlightSubmit=async()=>{
@@ -234,7 +276,8 @@ const {token}=useGlobalData()
       prf:data?.Prf,
       refundable:data?.refundable,
       duplicate:formsData,
-      via:data?.via
+      via:data?.via,
+      returnFliight:returnData,
 
     }
    await makeRequest({
@@ -381,7 +424,7 @@ const calculateTotalDays=(checkInDate,checkOutDate)=>{
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12 min-w-full">
-      <TableFlightQuery isOpen={handleTable} handleSave={handleFlightSubmit} duplicate={formsData} onClose={()=>{settable(false)}}  data={data}/>
+      <TableFlightQuery isOpen={handleTable} handleSave={handleFlightSubmit} duplicate={formsData.length>0 ? formsData : [returnData]} onClose={()=>{settable(false)}}  data={data}/>
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
          Genarate Query
@@ -694,7 +737,448 @@ const calculateTotalDays=(checkInDate,checkOutDate)=>{
       data.service==='Flight'?
       (
         <>
-         <>
+        {data.oneWayOrRoundway==='Round Way'? (
+          <>
+          {Array.from({length:2}).map((_,index)=>(
+          <>
+          {index===0? 
+          (
+            <>
+                  <>
+              <>
+              <Heading size='md' textTransform='uppercase' color={'blue.500'}>OnWard</Heading>
+
+<Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Flight Type</FormLabel>
+         <NormalSelect value={data.flightType} onChange={(e)=>{
+            setdata({...data,flightType:e.target.value})
+         }}>
+          <option selected disabled value={''}>Select</option>
+         <option value="Direct">Direct</option>
+         <option value="Via">Via</option>
+         </NormalSelect>
+        </FormControl>
+        <FormControl>
+         <FormLabel>Airline Names</FormLabel>
+        <Select 
+        options={airlines.map((airline)=>({value:airline.name,label:airline.name}))}
+        value={{value:data.airlineNames,label:data.airlineNames}}
+        onChange={(e)=>{
+          setdata({...data,airlineNames:e.value})
+        }}
+        isSearchable={true}
+        />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Flight Number</FormLabel>
+         <Input type="text" placeholder="Flight Number" value={data.FlightNumber} onChange={(e)=>{
+            setdata({...data,FlightNumber:e.target.value})
+         }} />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Fare Type</FormLabel>
+         <NormalSelect value={data.fareType} onChange={(e)=>{
+            setdata({...data,fareType:e.target.value})
+         }}>
+                    <option selected disabled value={''}>Select</option>
+
+         <option value="Normal">Normal</option>
+       <option value={'SME Fare'} >SME Fare</option>
+        <option value={'Corporate Fare'} >Corporate Fare</option>
+        <option value={'Special Fare'} >Special Fare</option>
+        <option value={'Other'} >Other</option>
+
+         </NormalSelect>
+        </FormControl>
+        <FormControl>
+         <FormLabel>Departure From</FormLabel>
+         <Select 
+         searchInputPlaceholder="Search for a Airport Name"
+    
+         formatOptionLabel={
+          ({label,city})=>(
+           <Stack divider={<StackDivider />} spacing='2' flexDir={'row'} justifyContent={'space-between'} cursor={'pointer'} my={5}>
+             <Box>
+        <Heading size='xs' textTransform='uppercase'>
+          {city}
+        </Heading>
+        <Text pt='2' fontSize='sm'>
+        {label}
+        </Text>
+      </Box>
+      <Box>
+        <Text pt='2'  fontWeight={'bold'} fontSize='sm'>
+          {airports.find((item)=>item.name===label).code}
+        </Text>
+      </Box>
+            </Stack>
+          )
+         } options={airports.map((airport)=>({value:airport.name,label:airport.name,city:airport.city}))} value={{value:data.departureFrom,label:data.departureFrom,city:data.departureFrom}} onChange={(e)=>{
+          setdata({...data,departureFrom:e.value})
+        }
+        } isSearchable={true} />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Departure Time</FormLabel>
+         <Input type="time" placeholder="Departure Time" value={data.departureTime} onChange={(e)=>{
+            setdata({...data,departureTime:e.target.value})
+         }} />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Arrival To</FormLabel>
+        <Select searchInputPlaceholder="Search for a Airport Name"
+    
+    formatOptionLabel={
+     ({label,city})=>(
+      <Stack divider={<StackDivider />} spacing='2' flexDir={'row'} justifyContent={'space-between'} cursor={'pointer'} my={5}>
+      <Box>
+ <Heading size='xs' textTransform='uppercase'>
+   {city}
+ </Heading>
+ <Text pt='2' fontSize='sm'>
+ {label}
+ </Text>
+</Box>
+<Box>
+ <Text pt='2' fontWeight={'bold'} fontSize='sm'>
+   {airports.find((item)=>item.name===label).code}
+ </Text>
+</Box>
+     </Stack>
+     )
+    } options={airports.map((airport)=>({value:airport.name,label:airport.name,city:airport.city}))}
+    value={{value:data.arrivalTo,label:data.arrivalTo,city:data.arrivalTo}} onChange={(e)=>{
+          setdata({...data,arrivalTo:e.value})
+        }
+        } isSearchable={true} />
+
+        </FormControl>
+        <FormControl>
+         <FormLabel>Arrival Time</FormLabel>
+         <Input type="time" placeholder="Arrival Time" value={data.arrivalTime} onChange={(e)=>{
+            setdata({...data,arrivalTime:e.target.value})
+         }} />
+        </FormControl>
+        </Grid>
+        <Divider/>
+
+        <Grid>
+        {
+          data.flightType==='Via'&&
+
+          (
+            <>
+          <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+          <FormControl >
+             <FormLabel>Flight Number</FormLabel>
+             <Input type="text" placeholder="Flight Number" value={data.via.FlightNumber} onChange={(e)=>{
+              setdata({...data,via:{...data.via,FlightNumber:e.target.value}})
+             }} />
+            </FormControl>
+            <FormControl>
+             <FormLabel>Departure From</FormLabel>
+             <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:data.via.departureFrom,label:data.via.departureFrom}} 
+              onChange={(e)=>{
+              setdata({...data,via:{...data.via,departureFrom:e.value}})
+             }} 
+             isSearchable={true} />
+            </FormControl>
+            <FormControl>
+             <FormLabel>Departure Time</FormLabel>
+             <Input type="time" placeholder="Departure Time" value={data.via.departureTime}       onChange={(e)=>{
+              setdata({...data,via:{...data.via,departureTime:e.target.value}})
+             }}  />
+            </FormControl>
+            <FormControl>
+             <FormLabel>Arrival To</FormLabel>
+            <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:data.via.arrivalTo,label:data.via.arrivalTo}}       onChange={(e)=>{
+              setdata({...data,via:{...data.via,arrivalTo:e.value}})
+             }}  isSearchable={true} />
+    
+            </FormControl>
+            <FormControl>
+             <FormLabel>Arrival Time</FormLabel>
+             <Input type="time" placeholder="Arrival Time" value={data.via.arrivalTime}       onChange={(e)=>{
+              setdata({...data,via:{...data.via,arrivalTime:e.target.value}})
+             }}  />
+            </FormControl>
+            </Grid>
+        </>
+          )
+            
+        }
+       <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+       <FormControl>
+         <FormLabel>Our Cost</FormLabel>
+         <Input type="number" placeholder="Our Cost" value={data.OurCost} onChange={(e)=>{
+            setdata({...data,OurCost:e.target.value})
+         }} />
+        </FormControl>
+        <FormControl>
+         <FormLabel>PRF</FormLabel>
+         <Input type="number" placeholder="PRF" value={data.Prf} onChange={(e)=>{
+            setdata({...data,Prf:e.target.value})
+         }} />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Total Cost</FormLabel>
+         <Input disabled type="number" placeholder="PRF" value={Number(data.OurCost)+Number(data.Prf)} />
+        </FormControl>
+        </Grid>
+        </Grid>
+        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Refundable</FormLabel>
+        <Checkbox isChecked={data.refundable} onChange={(e)=>{
+            setdata({...data,refundable:e.target.checked})
+         }
+          } />
+          
+        </FormControl>
+        </Grid>
+ 
+
+          </>
+          
+        {Array.from({length:totalFlightTicket}).map((_,index)=>(
+        <>
+        <FormDuplicate key={index} index={index} onChange={handleFormChange} />
+        <Button style={{backgroundColor:'red'}} onClick={()=>{
+          setTotalFlightTicket(totalFlightTicket-1)
+          setFormsData((prevData) => prevData.filter((_, i) => i !== index));
+
+        }}>Remove</Button>
+
+        </>
+        ))}
+       
+     
+       {/* <FormControl>
+        <Button style={{backgroundColor:'blue'}} onClick={()=>{setTotalFlightTicket(totalFlightTicket+1)}}>Duplicate</Button>
+
+        </FormControl> */}
+
+        </>
+         </> )
+          :
+          (
+            <>
+                  <>
+              <>
+              <Heading size='md' textTransform='uppercase' color={'blue.500'}>Return</Heading>
+
+<Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Flight Type</FormLabel>
+         <NormalSelect value={returnData.flightType} onChange={(e)=>{
+            setReturnData({...returnData,flightType:e.target.value})
+         }}>
+          <option selected disabled value={''}>Select</option>
+         <option value="Direct">Direct</option>
+         <option value="Via">Via</option>
+         </NormalSelect>
+        </FormControl>
+        <FormControl>
+         <FormLabel>Airline Names</FormLabel>
+        <Select 
+        options={airlines.map((airline)=>({value:airline.name,label:airline.name}))}
+        value={{value:returnData.airlineNames,label:returnData.airlineNames}}
+        onChange={(e)=>{
+          setReturnData({...returnData,airlineNames:e.value})
+        }}
+        isSearchable={true}
+        />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Flight Number</FormLabel>
+         <Input type="text" placeholder="Flight Number" value={returnData.FlightNumber} onChange={(e)=>{
+            setReturnData({...returnData,FlightNumber:e.target.value})
+         }} />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Fare Type</FormLabel>
+         <NormalSelect value={returnData.fareType} onChange={(e)=>{
+            setReturnData({...returnData,fareType:e.target.value})
+         }}>
+                    <option selected disabled value={''}>Select</option>
+
+         <option value="Normal">Normal</option>
+       <option value={'SME Fare'} >SME Fare</option>
+        <option value={'Corporate Fare'} >Corporate Fare</option>
+        <option value={'Special Fare'} >Special Fare</option>
+        <option value={'Other'} >Other</option>
+
+         </NormalSelect>
+        </FormControl>
+        <FormControl>
+         <FormLabel>Departure From</FormLabel>
+         <Select 
+         searchInputPlaceholder="Search for a Airport Name"
+    
+         formatOptionLabel={
+          ({label,city})=>(
+           <Stack divider={<StackDivider />} spacing='2' flexDir={'row'} justifyContent={'space-between'} cursor={'pointer'} my={5}>
+             <Box>
+        <Heading size='xs' textTransform='uppercase'>
+          {city}
+        </Heading>
+        <Text pt='2' fontSize='sm'>
+        {label}
+        </Text>
+      </Box>
+      <Box>
+        <Text pt='2'  fontWeight={'bold'} fontSize='sm'>
+          {airports.find((item)=>item.name===label).code}
+        </Text>
+      </Box>
+            </Stack>
+          )
+         } options={airports.map((airport)=>({value:airport.name,label:airport.name,city:airport.city}))} value={{value:returnData.departureFrom,label:returnData.departureFrom,city:returnData.departureFrom}} onChange={(e)=>{
+          setReturnData({...returnData,departureFrom:e.value})
+        }
+        } isSearchable={true} />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Departure Time</FormLabel>
+         <Input type="time" placeholder="Departure Time" value={returnData.departureTime} onChange={(e)=>{
+            setReturnData({...returnData,departureTime:e.target.value})
+         }} />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Arrival To</FormLabel>
+        <Select searchInputPlaceholder="Search for a Airport Name"
+    
+    formatOptionLabel={
+     ({label,city})=>(
+      <Stack divider={<StackDivider />} spacing='2' flexDir={'row'} justifyContent={'space-between'} cursor={'pointer'} my={5}>
+      <Box>
+ <Heading size='xs' textTransform='uppercase'>
+   {city}
+ </Heading>
+ <Text pt='2' fontSize='sm'>
+ {label}
+ </Text>
+</Box>
+<Box>
+ <Text pt='2' fontWeight={'bold'} fontSize='sm'>
+   {airports.find((item)=>item.name===label).code}
+ </Text>
+</Box>
+     </Stack>
+     )
+    } options={airports.map((airport)=>({value:airport.name,label:airport.name,city:airport.city}))}
+    value={{value:returnData.arrivalTo,label:returnData.arrivalTo,city:returnData.arrivalTo}} onChange={(e)=>{
+          setReturnData({...returnData,arrivalTo:e.value})
+        }
+        } isSearchable={true} />
+
+        </FormControl>
+        <FormControl>
+         <FormLabel>Arrival Time</FormLabel>
+         <Input type="time" placeholder="Arrival Time" value={returnData.arrivalTime} onChange={(e)=>{
+            setReturnData({...returnData,arrivalTime:e.target.value})
+         }} />
+        </FormControl>
+        </Grid>
+        <Divider/>
+
+        <Grid>
+        {
+          returnData.flightType==='Via'&&
+
+          (
+            <>
+          <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+          <FormControl >
+             <FormLabel>Flight Number</FormLabel>
+             <Input type="text" placeholder="Flight Number" value={returnData.via.FlightNumber} onChange={(e)=>{
+              setReturnData({...returnData,via:{...returnData.via,FlightNumber:e.target.value}})
+             }} />
+            </FormControl>
+            <FormControl>
+             <FormLabel>Departure From</FormLabel>
+             <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:returnData.via.departureFrom,label:returnData.via.departureFrom}} 
+              onChange={(e)=>{
+              setReturnData({...returnData,via:{...returnData.via,departureFrom:e.value}})
+             }} 
+             isSearchable={true} />
+            </FormControl>
+            <FormControl>
+             <FormLabel>Departure Time</FormLabel>
+             <Input type="time" placeholder="Departure Time" value={returnData.via.departureTime}       onChange={(e)=>{
+              setReturnData({...returnData,via:{...returnData.via,departureTime:e.target.value}})
+             }}  />
+            </FormControl>
+            <FormControl>
+             <FormLabel>Arrival To</FormLabel>
+            <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:returnData.via.arrivalTo,label:returnData.via.arrivalTo}}       onChange={(e)=>{
+              setReturnData({...returnData,via:{...returnData.via,arrivalTo:e.value}})
+             }}  isSearchable={true} />
+    
+            </FormControl>
+            <FormControl>
+             <FormLabel>Arrival Time</FormLabel>
+             <Input type="time" placeholder="Arrival Time" value={returnData.via.arrivalTime}       onChange={(e)=>{
+              setReturnData({...returnData,via:{...returnData.via,arrivalTime:e.target.value}})
+             }}  />
+            </FormControl>
+            </Grid>
+        </>
+          )
+            
+        }
+       <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+       <FormControl>
+         <FormLabel>Our Cost</FormLabel>
+         <Input type="number" placeholder="Our Cost" value={returnData.OurCost} onChange={(e)=>{
+            setReturnData({...returnData,OurCost:e.target.value})
+         }} />
+        </FormControl>
+        <FormControl>
+         <FormLabel>PRF</FormLabel>
+         <Input type="number" placeholder="PRF" value={returnData.Prf} onChange={(e)=>{
+            setReturnData({...returnData,Prf:e.target.value})
+         }} />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Total Cost</FormLabel>
+         <Input disabled type="number" placeholder="PRF" value={Number(returnData.OurCost)+Number(returnData.Prf)} />
+        </FormControl>
+        </Grid>
+        </Grid>
+        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Refundable</FormLabel>
+        <Checkbox isChecked={returnData.refundable} onChange={(e)=>{
+            setReturnData({...returnData,refundable:e.target.checked})
+         }
+          } />
+          
+        </FormControl>
+        </Grid>
+ 
+
+          </>
+          
+      
+       
+     
+     
+        </>
+            </>
+          )
+          }
+          </>
+          ))}
+        </>
+        )  
+        :
+        (
+          <>
+
+<>
+<Heading size='md' textTransform='uppercase' color={'blue.500'}>Onward</Heading>
 
 <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
         <FormControl>
@@ -907,6 +1391,11 @@ const calculateTotalDays=(checkInDate,checkOutDate)=>{
 
         </FormControl>
 
+        </>
+        
+        
+        )
+        }
         </>
       )
       :

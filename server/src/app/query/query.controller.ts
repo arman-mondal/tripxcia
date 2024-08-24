@@ -30,6 +30,7 @@ export const FlightQuerySave=async(req:Request,res:Response)=>{
             duplicate:req.body.duplicate,
             via:req.body.via,
             status:0,
+            returnFliight:req.body.returnFliight ?? {},
         });
         console.log(query)
         await query.save().then((result)=>{

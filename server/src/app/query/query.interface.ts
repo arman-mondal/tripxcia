@@ -63,6 +63,8 @@ export interface QueryInterface{
   
       }
       confirmed:any;
+      returnFliight:any;
+
     
 
 

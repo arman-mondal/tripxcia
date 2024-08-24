@@ -155,6 +155,7 @@ console.log(selector.query)
                   :
                   (
                     <Eye style={{cursor:'pointer'}} onClick={()=>{
+                      console.log(row.returnFliight)
                       setSelectedRow({
                         client:row.client,
                         serviceType:row.serviceType,
@@ -171,7 +172,9 @@ console.log(selector.query)
                         fareType:row.fareType,
                         flightType:row.flightType,
                         duplicate:row.duplicate,
-                        _id:row._id
+                        returnFliight:row.returnFliight ?? {},
+                        _id:row._id,
+                        OneWayOrRoundTrip:row.OneWayOrRoundTrip,
                         
                       });
                       setIsOpen(true);
