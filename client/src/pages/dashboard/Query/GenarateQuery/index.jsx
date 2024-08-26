@@ -501,53 +501,60 @@ const calculateTotalDays=(checkInDate,checkOutDate)=>{
         </NormalSelect>
         </FormControl>
         <FormControl>
-         <FormLabel>From (Location)</FormLabel>
-         {/* <Input type="text" placeholder="From (Location)"  value={data.from} onChange={(e)=>{
-            setdata({...data,from:e.target.value})
-         }}/> */}
+         <FormLabel>Departure From</FormLabel>
          <Select 
-          searchInputPlaceholder="Search for a City Name"
-          placeholder="From (Location)"
-          formatOptionLabel={
-            ({label})=>(
-              <Stack divider={<StackDivider />} spacing='2' cursor={'pointer'} my={5}>
-                <Box>
-            <Heading size='xs' textTransform='uppercase'>
-              {label}
-            </Heading>
-       
-          </Box>
-              </Stack>
-            )
-          } options={airports.map((airport)=>({value:airport.city,label:airport.city}))} value={{value:data.from,label:data.from}} onChange={(e)=>{
-            setdata({...data,from:e.value})
-          }
-          } isSearchable={true} />
-
+         searchInputPlaceholder="Search for a Airport Name"
+    
+         formatOptionLabel={
+          ({label,city,value})=>(
+           <Stack divider={<StackDivider />} spacing='2' flexDir={'row'} justifyContent={'space-between'} cursor={'pointer'} my={5}>
+             <Box>
+        <Heading size='xs' textTransform='uppercase'>
+          {city}
+        </Heading>
+        <Text pt='2' fontSize='sm'>
+        {value}
+        </Text>
+      </Box>
+      <Box>
+        <Text pt='2'  fontWeight={'bold'} fontSize='sm'>
+          {label}
+        </Text>
+      </Box>
+            </Stack>
+          )
+         } options={airports.map((airport)=>({value:airport.name,label:airport.code,city:airport.city}))} value={{value:data.departureFrom,label:data.departureFrom,city:data.departureFrom}} onChange={(e)=>{
+          setdata({...data,departureFrom:e.value})
+        }
+        } isSearchable={true} />
         </FormControl>
         <FormControl>
-         <FormLabel>To (Location)</FormLabel>
-         {/* <Input type="text" placeholder="To (Location)" value={data.to} onChange={(e)=>{
-            setdata({...data,to:e.target.value})
-         }} /> */}
-     <Select 
-          searchInputPlaceholder="Search for a City Name"
-          placeholder="To (Location)"
-          formatOptionLabel={
-            ({label})=>(
-              <Stack divider={<StackDivider />} spacing='2' cursor={'pointer'} my={5}>
-                <Box>
-            <Heading size='xs' textTransform='uppercase'>
-              {label}
-            </Heading>
-       
-          </Box>
-              </Stack>
-            )
-          } options={airports.map((airport)=>({value:airport.city,label:airport.city}))} value={{value:data.to,label:data.to}} onChange={(e)=>{
-            setdata({...data,to:e.value})
-          }
-          } isSearchable={true} />
+         <FormLabel>Arrival To</FormLabel>
+        <Select searchInputPlaceholder="Search for a Airport Name"
+    
+    formatOptionLabel={
+     ({label,city,value})=>(
+      <Stack divider={<StackDivider />} spacing='2' flexDir={'row'} justifyContent={'space-between'} cursor={'pointer'} my={5}>
+      <Box>
+ <Heading size='xs' textTransform='uppercase'>
+   {city}
+ </Heading>
+ <Text pt='2' fontSize='sm'>
+ {value}
+ </Text>
+</Box>
+<Box>
+ <Text pt='2' fontWeight={'bold'} fontSize='sm'>
+   {label}
+ </Text>
+</Box>
+     </Stack>
+     )
+    } options={airports.map((airport)=>({value:airport.name,label:airport.code,city:airport.city}))}
+    value={{value:data.arrivalTo,label:data.arrivalTo,city:data.arrivalTo}} onChange={(e)=>{
+          setdata({...data,arrivalTo:e.value})
+        }
+        } isSearchable={true} />
 
         </FormControl>
         <FormControl>
@@ -743,24 +750,24 @@ const calculateTotalDays=(checkInDate,checkOutDate)=>{
           <>
           {index===0? 
           (
-            <>
+            <>     
                   <>
-              <>
+            <>     
               <Heading size='md' textTransform='uppercase' color={'blue.500'}>OnWard</Heading>
 
-<Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <Grid templateColumns='repeat(3, 1fr)' gap={5}>
         <FormControl>
          <FormLabel>Flight Type</FormLabel>
          <NormalSelect value={data.flightType} onChange={(e)=>{
             setdata({...data,flightType:e.target.value})
-         }}>
-          <option selected disabled value={''}>Select</option>
-         <option value="Direct">Direct</option>
-         <option value="Via">Via</option>
-         </NormalSelect>
+        }}>
+        <option selected disabled value={''}>Select</option>
+        <option value="Direct">Direct</option>
+        <option value="Via">Via</option>
+        </NormalSelect>
         </FormControl>
         <FormControl>
-         <FormLabel>Airline Names</FormLabel>
+        <FormLabel>Airline Names</FormLabel>
         <Select 
         options={airlines.map((airline)=>({value:airline.name,label:airline.name}))}
         value={{value:data.airlineNames,label:data.airlineNames}}
@@ -825,35 +832,7 @@ const calculateTotalDays=(checkInDate,checkOutDate)=>{
             setdata({...data,departureTime:e.target.value})
          }} />
         </FormControl>
-        <FormControl>
-         <FormLabel>Arrival To</FormLabel>
-        <Select searchInputPlaceholder="Search for a Airport Name"
-    
-    formatOptionLabel={
-     ({label,city})=>(
-      <Stack divider={<StackDivider />} spacing='2' flexDir={'row'} justifyContent={'space-between'} cursor={'pointer'} my={5}>
-      <Box>
- <Heading size='xs' textTransform='uppercase'>
-   {city}
- </Heading>
- <Text pt='2' fontSize='sm'>
- {label}
- </Text>
-</Box>
-<Box>
- <Text pt='2' fontWeight={'bold'} fontSize='sm'>
-   {airports.find((item)=>item.name===label).code}
- </Text>
-</Box>
-     </Stack>
-     )
-    } options={airports.map((airport)=>({value:airport.name,label:airport.name,city:airport.city}))}
-    value={{value:data.arrivalTo,label:data.arrivalTo,city:data.arrivalTo}} onChange={(e)=>{
-          setdata({...data,arrivalTo:e.value})
-        }
-        } isSearchable={true} />
-
-        </FormControl>
+      
         <FormControl>
          <FormLabel>Arrival Time</FormLabel>
          <Input type="time" placeholder="Arrival Time" value={data.arrivalTime} onChange={(e)=>{
@@ -1223,69 +1202,14 @@ const calculateTotalDays=(checkInDate,checkOutDate)=>{
 
          </NormalSelect>
         </FormControl>
-        <FormControl>
-         <FormLabel>Departure From</FormLabel>
-         <Select 
-         searchInputPlaceholder="Search for a Airport Name"
-    
-         formatOptionLabel={
-          ({label,city})=>(
-           <Stack divider={<StackDivider />} spacing='2' flexDir={'row'} justifyContent={'space-between'} cursor={'pointer'} my={5}>
-             <Box>
-        <Heading size='xs' textTransform='uppercase'>
-          {city}
-        </Heading>
-        <Text pt='2' fontSize='sm'>
-        {label}
-        </Text>
-      </Box>
-      <Box>
-        <Text pt='2'  fontWeight={'bold'} fontSize='sm'>
-          {airports.find((item)=>item.name===label).code}
-        </Text>
-      </Box>
-            </Stack>
-          )
-         } options={airports.map((airport)=>({value:airport.name,label:airport.name,city:airport.city}))} value={{value:data.departureFrom,label:data.departureFrom,city:data.departureFrom}} onChange={(e)=>{
-          setdata({...data,departureFrom:e.value})
-        }
-        } isSearchable={true} />
-        </FormControl>
+       
         <FormControl>
          <FormLabel>Departure Time</FormLabel>
          <Input type="time" placeholder="Departure Time" value={data.departureTime} onChange={(e)=>{
             setdata({...data,departureTime:e.target.value})
          }} />
         </FormControl>
-        <FormControl>
-         <FormLabel>Arrival To</FormLabel>
-        <Select searchInputPlaceholder="Search for a Airport Name"
-    
-    formatOptionLabel={
-     ({label,city})=>(
-      <Stack divider={<StackDivider />} spacing='2' flexDir={'row'} justifyContent={'space-between'} cursor={'pointer'} my={5}>
-      <Box>
- <Heading size='xs' textTransform='uppercase'>
-   {city}
- </Heading>
- <Text pt='2' fontSize='sm'>
- {label}
- </Text>
-</Box>
-<Box>
- <Text pt='2' fontWeight={'bold'} fontSize='sm'>
-   {airports.find((item)=>item.name===label).code}
- </Text>
-</Box>
-     </Stack>
-     )
-    } options={airports.map((airport)=>({value:airport.name,label:airport.name,city:airport.city}))}
-    value={{value:data.arrivalTo,label:data.arrivalTo,city:data.arrivalTo}} onChange={(e)=>{
-          setdata({...data,arrivalTo:e.value})
-        }
-        } isSearchable={true} />
-
-        </FormControl>
+      
         <FormControl>
          <FormLabel>Arrival Time</FormLabel>
          <Input type="time" placeholder="Arrival Time" value={data.arrivalTime} onChange={(e)=>{
@@ -1322,13 +1246,7 @@ const calculateTotalDays=(checkInDate,checkOutDate)=>{
               setdata({...data,via:{...data.via,departureTime:e.target.value}})
              }}  />
             </FormControl>
-            <FormControl>
-             <FormLabel>Arrival To</FormLabel>
-            <Select options={airports.map((airport)=>({value:airport.name,label:airport.name}))} value={{value:data.via.arrivalTo,label:data.via.arrivalTo}}       onChange={(e)=>{
-              setdata({...data,via:{...data.via,arrivalTo:e.value}})
-             }}  isSearchable={true} />
-    
-            </FormControl>
+           
             <FormControl>
              <FormLabel>Arrival Time</FormLabel>
              <Input type="time" placeholder="Arrival Time" value={data.via.arrivalTime}       onChange={(e)=>{

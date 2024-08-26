@@ -33,7 +33,7 @@ const navigate=useNavigate()
     return (
       <>
   
-        <Modal isOpen={isOpen} onClose={onClose} size={'2xl'}>
+        <Modal isOpen={isOpen} onClose={onClose} size={'auto'} >
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Form Submitted Successfully</ModalHeader>

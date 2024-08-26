@@ -39,10 +39,16 @@ export default function Ticket() {
             <Text fontSize={20}>Booking Date -: {data.bookingDate}</Text>
 
         </Box>
-        <Box mt={10}>
+       <Box display={'flex'} flexDir={'column'}>
+       <Box >
             <Text fontSize={30}>Itinerary and Reservation Details</Text>
         </Box>
-        <Box minW={'100%'} minH={'300px'}display={'flex'} borderColor={'lightskyblue'} gap={10} borderRadius={1} borderWidth={2} flexDir={'column'} >
+      {data.OneWayOrRoundTrip==="Round Way" &&   <Box >
+            <Text color={'lightskyblue'} fontSize={20}>Onward</Text>
+        </Box>}
+       </Box>
+        
+        <Box minW={'100%'} minH={'200px'}display={'flex'} borderColor={'lightskyblue'} gap={5} borderRadius={1} borderWidth={2} flexDir={'column'} >
         <Grid templateColumns='repeat(4, 1fr)'   maxH={'50%'} minH={'50%'}  minW={'100%'}>
             <Box display={'flex'} flexDir={'column'}   justifyContent={'center'} alignItems={'center'}>
                 <Text fontSize={15}>{data.airlineName}</Text>
@@ -87,6 +93,59 @@ export default function Ticket() {
                
            </Grid>
         </Box>
+        {data.OneWayOrRoundTrip=="Round Way" &&   <Box >
+            <Text color={'lightskyblue'} fontSize={20}>Return</Text>
+        </Box>}
+       {data.OneWayOrRoundTrip=='Round Way' && 
+       (
+        <Box minW={'100%'} minH={'200px'}display={'flex'} borderColor={'lightskyblue'} gap={5} borderRadius={1} borderWidth={2} flexDir={'column'} >
+        <Grid templateColumns='repeat(4, 1fr)'   maxH={'50%'} minH={'50%'}  minW={'100%'}>
+            <Box display={'flex'} flexDir={'column'}   justifyContent={'center'} alignItems={'center'}>
+                <Text fontSize={15}>{data.returnFliight.airlineNames}</Text>
+                <Text fontSize={15} fontWeight={'bold'}>{data.returnFliight.flightNumber}</Text>
+                </Box>
+                <Box display={'flex'} flexDir={'column'}   justifyContent={'center'} alignItems={'center'}>
+                <Text fontSize={15}>Departure</Text>
+                <Text fontSize={15} fontWeight={'bold'}>{data.returnFliight.departureFrom} </Text>
+                <Text fontSize={15} >{data.returnFliight.DepartureDate}  {data.returnFliight.departureTime} Hrs </Text>
+
+                </Box>
+                <Box display={'flex'} flexDir={'column'}   justifyContent={'center'} alignItems={'center'}>
+                <Text fontSize={15}>Arrival</Text>
+                <Text fontSize={15} fontWeight={'bold'}>{data.arrivalTo} </Text>
+                <Text fontSize={15} >{data.returnFliight.DepartureDate}  {data.returnFliight.arrivalTime} Hrs </Text>
+
+                </Box>
+                <Box display={'flex'} flexDir={'column'}  justifyContent={'center'} alignItems={'center'}>
+                <Text fontSize={15}>{data?.returnFliight.flightType ==='Direct' ? 'Direct' : '1-Stop Flight'}</Text>
+                <Text fontSize={15}>1h 0m</Text>
+                <Text fontSize={15}>{data?.returnFliight.refundable ? 'Fare Refundable' : 'Fare Non-Refundable'}</Text>
+                </Box>
+            
+           </Grid>
+           <Grid templateColumns='repeat(3, 1fr)'   maxH={'50%'}  minW={'100%'} >
+            <Box display={'flex'} flexDir={'column'}   justifyContent={'center'} alignItems={'center'}>
+                <Text fontSize={15}>Passenger Name</Text>
+                <Text fontSize={15} fontWeight={'bold'}>{data.returnFliight.passengerName}</Text>
+                </Box>
+                <Box display={'flex'} flexDir={'column'}   justifyContent={'center'} alignItems={'center'}>
+                <Text fontSize={15}>Departure</Text>
+                <Text fontSize={15} fontWeight={'bold'}>Type </Text>
+                <Text fontSize={15} >Adult </Text>
+
+                </Box>
+                <Box display={'flex'} flexDir={'column'}   justifyContent={'center'} alignItems={'center'}>
+                <Text fontSize={15}>Airline PNR</Text>
+                <Text fontSize={15} fontWeight={'bold'}>{data.returnFliight.pnrNumber} </Text>
+                {/* <Text fontSize={20} >{data.DepartureDate}  {data.arrivalTime} Hrs </Text> */}
+
+                </Box>
+               
+           </Grid>
+        </Box>
+       )
+       
+       }
         <Box mt={10}>
             <Text fontSize={20} textColor={'lightskyblue'} fontWeight={'bold'}>Important Information</Text>
             <Text fontSize={15} px={10}>Delhi and Mumbai airports have multiple terminals catering to domestic flights. Please check the departure/arrival terminal of your flight with the airlines (contact number given below) before the start of your trip.</Text>

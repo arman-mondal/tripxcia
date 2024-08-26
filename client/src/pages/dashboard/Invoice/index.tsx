@@ -7,7 +7,7 @@ import { Button, styled } from '@chakra-ui/react';
 import { useReactToPrint } from 'react-to-print';
 export default function Invoice() {
     const queryID=useParams().id;
-    const {fetchFlightQueryById}=useGlobalData();
+    const {fetchFlightQueryById,vendors}=useGlobalData();
     const data=fetchFlightQueryById(queryID);
     const targetRef=React.useRef(null);
     const handlePrint=useReactToPrint({
@@ -110,9 +110,9 @@ body {
     </tbody></table>
 <table id="table2" width="98%" align="center">
     <tbody><tr><td>Bill To</td> <td>Invoice No - {data?._id}</td></tr>
-    <tr><td>Basil Bridges</td><td>Dt - 09-07-2024</td></tr>
+    <tr><td>{vendors.find(a=>a.name===data?.vendorName)?.name ?? ''}</td><td>Date - {(new Date).getDay()+'/'+(new Date).getMonth()+'/'+(new Date).getFullYear()}</td></tr>
     <tr><td></td></tr>
-    <tr><td>GST No - 2465656756</td></tr>
+    <tr><td>GST No - {vendors.find(a=>a.name===data?.vendorName)?.gstinNumber ?? ''}</td></tr>
 
 </tbody></table>
 <table className="table3" width="98%" align="center">
@@ -128,15 +128,39 @@ body {
             Collected on behalf of <br></br> Airline and other Ancillary Charges)
         </p> <br></br>
     
-    <h3>Onward</h3>
-    <p> Flight No - </p>
+   
        {
         data.serviceType==='Flight' ? (
             <>
-            <p>From - {data?.from}</p>
-            <p>To - {data?.to}</p>
+           {
+            data.OneWayOrRoundTrip=='Round Way' ?
+            (
+                <>
+                  <h3>Onward</h3>
+             <p> Flight No - {data?.flightNumber}</p>
+            <p>From - {data?.departureFrom}</p>
+            <p>To - {data?.arrivalTo}</p>
             <p>Departure - {data?.departure}</p>
             <p>Arrival - {data?.arrival}</p>
+            <h3>Return</h3>
+             <p> Flight No - {data?.returnFliight?.flightNumber}</p>
+            <p>From - {data?.returnFliight?.departureFrom}</p>
+            <p>To - {data?.returnFliight?.arrivalTo}</p>
+            <p>Departure - {data?.returnFliight?.departureTime}</p>
+            <p>Arrival - {data?.returnFliight?.arrivalTime}</p>
+                </>
+            )
+            :(
+                <>
+  <h3>Onward</h3>
+             <p> Flight No - {data?.flightNumber}</p>
+            <p>From - {data?.departureFrom}</p>
+            <p>To - {data?.arrivalTo}</p>
+            <p>Departure - {data?.departureTime}</p>
+            <p>Arrival - {data?.arrivalTime}</p>
+                </>
+            )
+           }
             </>
         )
         :
@@ -159,7 +183,6 @@ body {
     }
 
     
-        Pax - 1   
         <h4 style={{ float: 'right' }}> </h4><br></br>
 
         <h4 style={{ float: 'right' }}>Management Fee</h4><br></br>
@@ -168,20 +191,28 @@ body {
 
  </td>
         <td align="right">{(Number(data?.ourCost)).toFixed(2)}<br></br>
-        
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
                                                             <p style={{ textAlign: 'right', marginTop: '190px' }}>
-                                                                {data?.prf}
+                                                                {Number(data?.prf).toFixed(2)}
                 
                 </p>
                 <p style={{
                     textAlign: 'right', marginTop: '0px'    
                 }}>
-                {data?.prf * 0.09}
+                {Number(data?.prf * 0.09).toFixed(2)}
                 </p>
                 <p style={{
                     textAlign: 'right', marginTop: '0px'    
                 }}>
-                {data?.prf * 0.09}
+                {Number(data?.prf * 0.09).toFixed(2)}
                 </p>
             <p style={{ textAlign: 'right', marginTop: '0px' }}>
             <br></br>
