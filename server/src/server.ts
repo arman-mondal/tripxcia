@@ -6,6 +6,7 @@ import cors from "cors";
 import morgan from "morgan";
 import fs from "fs";
 dotenv.config();
+const ser="hh"
 mongoose.connect(process.env.MONGO_URI as string);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
